@@ -1,9 +1,15 @@
 import logo from './logo.svg';
 import './App.css';
 
+function Hello(props) {
+  return (
+    <h1>Hello, {props.name} ({props.age})</h1>
+  )
+}
 function App() {
   return (
     <div className="App">
+      <Hello name="Teawoo" age={21} />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
@@ -23,3 +29,4 @@ function App() {
 }
 
 export default App;
+
