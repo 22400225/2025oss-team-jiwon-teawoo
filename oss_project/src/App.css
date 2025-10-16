@@ -1,0 +1,211 @@
+.app-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/* ================== 1. 사이드바 스타일 ================== */
+.sidebar {
+    width: 250px;
+    background-color: var(--color-sidebar);
+    padding: 15px 10px;
+    border-right: 1px solid var(--color-border);
+    flex-shrink: 0; /* 크기 유지 */
+    overflow-y: auto; /* 내용이 많아지면 스크롤 가능 */
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+.playlist-list {
+    list-style: none;
+}
+
+.add-folder-btn {
+    width: 100%;
+    padding: 8px 10px;
+    margin-top: 10px;
+    background: none;
+    border: none;
+    color: var(--color-secondary);
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    border-radius: 6px;
+    transition: background-color 0.15s;
+}
+
+.add-folder-btn:hover {
+    background-color: var(--color-hover);
+    color: var(--color-foreground);
+}
+
+.add-folder-btn .icon {
+    font-size: 16px;
+    margin-right: 8px;
+    font-weight: 700;
+}
+
+/* ================== 2. 메인 콘텐츠 스타일 ================== */
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px;
+    overflow: hidden; /* 내부 스크롤을 위해 필요 */
+}
+
+/* 검색 및 필터 영역 */
+.search-filter-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0 10px 0;
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0; /* 고정 */
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-hover); /* 검색창 배경 */
+    border-radius: 8px;
+    padding: 5px 10px;
+    flex-grow: 1;
+    max-width: 400px;
+}
+
+#music-search {
+    border: none;
+    background: none;
+    color: var(--color-foreground);
+    padding: 0;
+    width: 100%;
+    font-size: 14px;
+}
+
+#music-search::placeholder {
+    color: var(--color-secondary);
+}
+
+#music-search:focus {
+    outline: none;
+}
+
+.search-icon-btn {
+    background: none;
+    border: none;
+    color: var(--color-secondary);
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.controls-area {
+    /* 스케치 우측 상단의 설정/추가 버튼 영역 */
+    margin-left: 20px;
+}
+
+.settings-btn {
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    color: var(--color-secondary);
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.settings-btn:hover {
+    background-color: var(--color-hover);
+}
+
+/* ================== 음악 목록 헤더 ================== */
+.music-list-header {
+    display: flex;
+    padding: 10px 0;
+    font-weight: 600;
+    color: var(--color-secondary);
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0; /* 고정 */
+    margin-bottom: 5px;
+}
+
+.header-col {
+    padding: 0 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer; /* 정렬 기능이 있음을 암시 */
+}
+
+.header-col:hover {
+    color: var(--color-foreground);
+}
+
+/* ================== 음악 목록 본문 (아이템) ================== */
+.music-list-body {
+    overflow-y: auto; /* 목록이 길어지면 스크롤 */
+    padding-right: 5px; /* 스크롤바 공간 확보 */
+}
+
+.music-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.1s, color 0.1s;
+}
+
+.music-item:hover {
+    background-color: var(--color-hover);
+}
+
+.music-item[aria-selected="true"],
+.music-item:focus {
+    /* 현재 재생/선택된 아이템 스타일 */
+    background-color: var(--color-active);
+    color: var(--color-foreground);
+    outline: none; /* 접근성을 위해 outline을 커스텀하거나 유지하는 것이 좋음 */
+}
+
+.item-col {
+    padding: 0 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ================== 컬럼 너비 설정 (중요) ================== */
+.img-col {
+    width: 50px; /* 앨범 아트 */
+    flex-shrink: 0;
+}
+.title-col {
+    flex-grow: 2; /* 제목이 가장 넓음 */
+}
+.artist-col {
+    flex-grow: 2; /* 아티스트 */
+}
+.album-col {
+    flex-grow: 2; /* 앨범 */
+    display: none; /* 모바일 등에서는 숨길 수 있음. 데스크탑 기준으로는 보임 */
+}
+.duration-col {
+    width: 50px; /* 재생 시간 고정 */
+    text-align: right;
+    flex-shrink: 0;
+    color: var(--color-secondary);
+}
+
+/* 현재 재생 중인 항목의 텍스트 색상 */
+.music-item:not([aria-selected="true"]) .title-col:contains("현재 재생 중") {
+    color: var(--color-accent); /* 강조 색상 */
+}
