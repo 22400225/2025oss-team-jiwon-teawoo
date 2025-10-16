@@ -67,7 +67,7 @@ function App() {
     return (
         <div className="container">
             <div id="search-container">
-                <h1>🎵 Spotify 노래 검색</h1>
+                <h1>🎵 Handong Music 노래 검색</h1>
                 <form id="search-form" onSubmit={handleSearch}>
                     <input
                         type="text"
@@ -94,7 +94,7 @@ function App() {
                                 <h3>{track.name}</h3>
                                 <p>{track.artists.map(artist => artist.name).join(', ')} - <em>{track.album.name}</em></p>
                                 <a href={track.external_urls.spotify} target="_blank" rel="noopener noreferrer">
-                                    Spotify에서 듣기
+                                    Handong Music에서 듣기
                                 </a>
                             </div>
                         </div>
