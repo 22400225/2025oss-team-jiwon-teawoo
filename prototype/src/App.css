@@ -83,6 +83,11 @@ body {
     overflow: hidden; /* 내부 요소가 경계를 넘지 않도록 */
 }
 
+.song-item:hover {
+    transform: translateY(-4px); /* 마우스를 올리면 살짝 뜨는 효과 */
+    background-color: #21262d; /* 배경색도 살짝 변경 */
+}
+
 .album-cover {
     width: 45px; /* 앨범 커버 대폭 축소 */
     height: 45px;
