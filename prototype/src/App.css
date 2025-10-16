@@ -1,4 +1,4 @@
-/* === 기본 스타일 (Dark Theme & Centered) === */
+/* === 기본 스타일 (수정된 중앙 정렬) === */
 
 :root {
     --bg-dark: #121212;
@@ -15,18 +15,15 @@ body {
     background-color: var(--bg-dark);
     font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     color: var(--text-primary);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 1rem;
-    box-sizing: border-box;
 }
 
+/* *** 수정: body의 flex 정렬을 제거하고, container가 스스로 중앙 정렬하도록 변경 *** */
 .container {
     width: 100%;
-    max-width: 800px;
+    max-width: 800px; /* 전체 콘텐츠의 최대 너비 */
+    margin: 0 auto;   /* 상하 마진 없이, 좌우 마진을 auto로 주어 중앙 정렬 */
+    padding: 2rem 1rem; /* 위아래 여백 추가 */
+    box-sizing: border-box;
 }
 
 /* 검색 컨테이너 */
@@ -65,33 +62,23 @@ body {
     transition: all 0.2s ease-in-out;
 }
 
-#search-input::placeholder {
-    color: var(--text-secondary);
-}
-
-#search-input:hover {
-    background-color: #333333;
-    border-color: #444444;
-}
-
+#search-input::placeholder { color: var(--text-secondary); }
+#search-input:hover { background-color: #333333; border-color: #444444; }
 #search-input:focus {
     border-color: var(--brand-green);
     outline: none;
     box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.5);
     background-color: #333333;
 }
-
-/* *** 수정: 브라우저 자동 완성 시 배경색 강제 유지 *** */
 #search-input:-webkit-autofill,
 #search-input:-webkit-autofill:hover,
 #search-input:-webkit-autofill:focus,
 #search-input:-webkit-autofill:active {
-    -webkit-text-fill-color: var(--text-primary) !important; /* 글자 색상 강제 */
-    -webkit-box-shadow: 0 0 0 30px #282828 inset !important; /* 배경색 강제 */
+    -webkit-text-fill-color: var(--text-primary) !important;
+    -webkit-box-shadow: 0 0 0 30px #282828 inset !important;
     box-shadow: 0 0 0 30px #282828 inset !important;
-    caret-color: var(--text-primary); /* 커서 색상 */
+    caret-color: var(--text-primary);
 }
-
 
 #search-button {
     width: 100%;
@@ -104,20 +91,16 @@ body {
     border-radius: 30px;
     cursor: pointer;
     transition: background-color 0.2s, transform 0.1s;
-    /* *** 추가: 버튼 내부 텍스트 정렬 보장 *** */
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-#search-button:hover {
-    background-color: #1ed760;
-    transform: translateY(-2px);
-}
+#search-button:hover { background-color: #1ed760; transform: translateY(-2px); }
 
 /* 노래 목록 */
 #song-list-container {
-    margin-top: 2rem;
+    /* 이 컨테이너는 이제 .container의 자식으로 자연스럽게 중앙 정렬됩니다. */
 }
 
 .message {
@@ -130,7 +113,7 @@ body {
 #song-list {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.2rem;
+    gap: 1rem; /* 간격 살짝 줄임 */
 }
 
 /* 개별 노래 아이템 */
@@ -138,50 +121,38 @@ body {
     display: flex;
     align-items: center;
     background-color: var(--bg-light);
-    padding: 1rem 1.2rem;
+    padding: 1rem;
     border-radius: 10px;
     box-shadow: 0 4px 12px var(--shadow-color);
     transition: transform 0.2s, background-color 0.2s;
-    position: relative;
 }
 
-.song-item:hover {
-    transform: translateY(-5px);
-    background-color: #282828;
-}
+.song-item:hover { transform: translateY(-5px); background-color: #282828; }
 
 .album-cover {
-    width: 90px;
-    height: 90px;
+    width: 70px; /* 크기 살짝 줄여서 공간 확보 */
+    height: 70px;
     border-radius: 8px;
-    margin-right: 1.5rem;
+    margin-right: 1rem;
     object-fit: cover;
-    flex-shrink: 0;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    flex-shrink: 0; /* 중요: 이미지가 찌그러지지 않도록 함 */
 }
 
+/* *** 수정: 플레이 버튼이 밀려나지 않도록 flexbox 속성 조정 *** */
 .song-info {
-    flex-grow: 1;
-    min-width: 0;
+    flex-grow: 1; /* 남는 공간을 모두 차지 */
+    min-width: 0; /* 중요: 이 속성이 없으면 자식 요소(텍스트)가 넘칠 때 부모가 줄어들지 않아 버튼이 밀려남 */
 }
 
-.song-info h3 {
-    margin: 0 0 0.4rem 0;
-    font-size: 1.25rem;
-    color: var(--text-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.song-info p {
+.song-info h3, .song-info p {
     margin: 0;
-    font-size: 1rem;
-    color: var(--text-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: nowrap;      /* 줄바꿈 방지 */
+    overflow: hidden;         /* 넘치는 부분 숨김 */
+    text-overflow: ellipsis;  /* 넘치는 텍스트를 ...으로 표시 */
 }
+
+.song-info h3 { font-size: 1.1rem; color: var(--text-primary); margin-bottom: 0.3rem; }
+.song-info p { font-size: 0.9rem; color: var(--text-secondary); }
 
 .play-button {
     background-color: var(--brand-green);
@@ -194,21 +165,13 @@ body {
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.2s, transform 0.1s;
-    flex-shrink: 0;
+    flex-shrink: 0; /* 중요: 공간이 부족해도 버튼 크기를 유지함 */
     margin-left: 1rem;
     padding: 0;
 }
 
-.play-button:hover {
-    background-color: #1ed760;
-    transform: scale(1.05);
-}
-
-.play-button svg {
-    width: 20px;
-    height: 20px;
-    fill: white;
-}
+.play-button:hover { background-color: #1ed760; transform: scale(1.05); }
+.play-button svg { width: 20px; height: 20px; fill: white; }
 
 /* === 데스크탑 반응형 스타일 (768px 이상) === */
 @media (min-width: 768px) {
@@ -216,19 +179,8 @@ body {
         flex-direction: row;
         max-width: 600px;
         margin: 0 auto;
-        /* *** 추가: 검색창과 버튼을 수직으로 중앙 정렬 *** */
         align-items: center;
     }
-
-    #search-input {
-        flex-grow: 1;
-        margin-right: 0.8rem;
-    }
-
-    #search-button {
-        width: auto;
-        padding-left: 35px;
-        padding-right: 35px;
-        flex-shrink: 0; /* 버튼이 줄어들지 않도록 설정 */
-    }
+    #search-input { flex-grow: 1; margin: 0 0.8rem 0 0; }
+    #search-button { width: auto; padding: 14px 35px; flex-shrink: 0; }
 }
