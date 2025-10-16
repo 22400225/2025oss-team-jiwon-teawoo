@@ -56,7 +56,7 @@ function App() {
     return (
         <div className="container">
             <div id="search-container">
-                <h1>🎵 Handong Music Service</h1>
+                <h1>Handong Music Service</h1>
                 <form id="search-form" onSubmit={handleSearch}>
                     <input
                         type="text"
