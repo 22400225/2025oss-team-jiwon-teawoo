@@ -5,12 +5,12 @@ function App() {
     // React 상태(state)를 사용하여 데이터 관리
     const [query, setQuery] = useState(''); // 검색어 상태
     const [tracks, setTracks] = useState([]); // 노래 목록 상태
-    const [message, setMessage] = useState('듣고 싶은 노래를 검색해 보세요'); // 메시지 상태
+    const [message, setMessage] = useState('듣고 싶은 노래를 검색해 보세요!'); // 메시지 상태
 
-    // 1. 검색 실행 함수 (수정됨)
+    // 검색 실행 함수
     const handleSearch = async (event) => {
         event.preventDefault(); // 폼 제출 시 새로고침 방지
-        if (!query) return; // 검색어가 없으면 실행하지 않음
+        if (!query.trim()) return; // 검색어가 없으면 실행하지 않음
 
         setMessage(`"${query}" 검색 중... 🎧`);
         setTracks([]); // 이전 검색 결과 초기화
@@ -32,7 +32,7 @@ function App() {
         }
 
         // Spotify API 검색 요청
-        const searchUrl = `https://api.spotify.com/v1/search?q=$${encodeURIComponent(query)}&type=track&limit=50`;
+        const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=50`;
         try {
             const response = await fetch(searchUrl, {
                 headers: { 'Authorization': `Bearer ${accessToken}` },
@@ -52,11 +52,11 @@ function App() {
         }
     };
 
-    // 2. 화면을 그리는 부분 (JSX - 변경 없음)
+    // 화면을 그리는 부분 (JSX)
     return (
         <div className="container">
             <div id="search-container">
-                <h1>Handong Music</h1>
+                <h1>🎵 Handong Music 노래 검색</h1>
                 <form id="search-form" onSubmit={handleSearch}>
                     <input
                         type="text"
@@ -75,17 +75,21 @@ function App() {
                     {tracks.map((track) => (
                         <div className="song-item" key={track.id}>
                             <img
-                                src={track.album.images[1]?.url || track.album.images[0]?.url}
+                                src={track.album.images[1]?.url || track.album.images[0]?.url || 'https://via.placeholder.com/100'} // 이미지 없을 때 기본 이미지
                                 alt={`${track.album.name} 앨범 커버`}
                                 className="album-cover"
                             />
                             <div className="song-info">
                                 <h3>{track.name}</h3>
                                 <p>{track.artists.map(artist => artist.name).join(', ')} - <em>{track.album.name}</em></p>
-                                <a href={track.external_urls.spotify} target="_blank" rel="noopener noreferrer">
-                                    Handong Music에서 듣기
-                                </a>
                             </div>
+                            <button
+                                className="play-button"
+                                onClick={() => window.open(track.external_urls.spotify, '_blank')}
+                                aria-label={`${track.name} Spotify에서 재생`}
+                            >
+                                ▶️
+                            </button>
                         </div>
                     ))}
                 </div>
