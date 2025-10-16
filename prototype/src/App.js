@@ -1,106 +1,80 @@
-import React, { useState } from 'react';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // API 호출을 위해 axios 사용
 
 function App() {
-    // React 상태(state)를 사용하여 데이터 관리
-    const [query, setQuery] = useState(''); // 검색어 상태
-    const [tracks, setTracks] = useState([]); // 노래 목록 상태
-    const [message, setMessage] = useState('듣고 싶은 노래를 검색해 보세요!'); // 메시지 상태
+    const [accessToken, setAccessToken] = useState(null);
+    const [artistInfo, setArtistInfo] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
-    // Spotify API 키를 .env 파일에서 불러오기
-    const clientId = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
-    const clientSecret = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET;
+    useEffect(() => {
+        // 1. 우리 앱의 백엔드(Netlify 함수)에 토큰을 요청하는 함수
+        const getAccessToken = async () => {
+            try {
+                // 우리가 만든 서버리스 함수를 호출합니다.
+                const response = await fetch('/.netlify/functions/spotify-auth');
 
-    // 1. Access Token 발급 함수
-    const getAccessToken = async () => {
-        const tokenUrl = 'https://accounts.spotify.com/api/token';
-        const authString = btoa(`${clientId}:${clientSecret}`);
-        try {
-            const response = await fetch(tokenUrl, {
-                method: 'POST',
-                headers: { 'Authorization': `Basic ${authString}`, 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'grant_type=client_credentials',
-            });
-            if (!response.ok) throw new Error('인증 실패');
-            const data = await response.json();
-            return data.access_token;
-        } catch (error) {
-            console.error('Access Token 발급 오류:', error);
-            setMessage('API 인증에 실패했습니다. 키를 확인해주세요.');
-            return null;
-        }
-    };
+                if (!response.ok) {
+                    throw new Error('서버에서 토큰을 가져오지 못했습니다.');
+                }
 
-    // 2. 검색 실행 함수
-    const handleSearch = async (event) => {
-        event.preventDefault(); // 폼 제출 시 새로고침 방지
-        if (!query) return; // 검색어가 없으면 실행하지 않음
+                const data = await response.json();
+                setAccessToken(data.accessToken);
 
-        setMessage(`"${query}" 검색 중... 🎧`);
-        setTracks([]); // 이전 검색 결과 초기화
-
-        const accessToken = await getAccessToken();
-        if (!accessToken) return;
-
-        // Spotify API 검색 요청
-        const searchUrl = `https://api.spotify.com/v1/search?q=$${encodeURIComponent(query)}&type=track&limit=50`; // 50곡만 가져오도록 단순화
-        try {
-            const response = await fetch(searchUrl, {
-                headers: { 'Authorization': `Bearer ${accessToken}` },
-            });
-            if (!response.ok) throw new Error('API 요청 실패');
-            const data = await response.json();
-
-            if (data.tracks.items.length === 0) {
-                setMessage(`"${query}"에 대한 검색 결과가 없습니다.`);
-            } else {
-                setTracks(data.tracks.items);
-                setMessage(''); // 결과가 있으면 메시지 숨김
+            } catch (err) {
+                setError('인증에 실패했습니다. 잠시 후 다시 시도해주세요.');
+                console.error(err);
             }
-        } catch (error) {
-            console.error('노래 검색 오류:', error);
-            setMessage('노래를 불러오는 중 오류가 발생했습니다.');
-        }
-    };
+        };
 
-    // 3. 화면을 그리는 부분 (JSX)
+        getAccessToken();
+    }, []); // 컴포넌트가 처음 렌더링될 때 한 번만 실행
+
+    useEffect(() => {
+        if (!accessToken) return; // 토큰이 없으면 아무것도 하지 않음
+
+        // 2. 받아온 토큰으로 Spotify API에 실제 데이터 요청
+        const getArtistData = async () => {
+            try {
+                // 예시: 아이유(IU)의 아티스트 정보 가져오기
+                const artistId = '3HqSLMAZ3g3d5poNaI7GOU';
+                const response = await axios.get(`https://api.spotify.com/v1/artists/${artistId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                    },
+                });
+
+                setArtistInfo(response.data);
+            } catch (err) {
+                setError('Spotify에서 데이터를 가져오는 데 실패했습니다.');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        getArtistData();
+    }, [accessToken]); // accessToken이 설정되면 이 useEffect 실행
+
+    if (loading) {
+        return <div>로딩 중...</div>;
+    }
+
+    if (error) {
+        return <div style={{ color: 'red' }}>에러: {error}</div>;
+    }
+
     return (
-        <div className="container">
-            <div id="search-container">
-                <h1>🎵 Handong Music 노래 검색</h1>
-                <form id="search-form" onSubmit={handleSearch}>
-                    <input
-                        type="text"
-                        id="search-input"
-                        placeholder="아티스트, 노래 제목, 앨범명 검색..."
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                    />
-                    <button type="submit" id="search-button">검색</button>
-                </form>
-            </div>
-
-            <div id="song-list-container">
-                {message && <p className="message">{message}</p>}
-                <div id="song-list">
-                    {tracks.map((track) => (
-                        <div className="song-item" key={track.id}>
-                            <img
-                                src={track.album.images[1]?.url || track.album.images[0]?.url}
-                                alt={`${track.album.name} 앨범 커버`}
-                                className="album-cover"
-                            />
-                            <div className="song-info">
-                                <h3>{track.name}</h3>
-                                <p>{track.artists.map(artist => artist.name).join(', ')} - <em>{track.album.name}</em></p>
-                                <a href={track.external_urls.spotify} target="_blank" rel="noopener noreferrer">
-                                    Handong Music에서 듣기
-                                </a>
-                            </div>
-                        </div>
-                    ))}
+        <div>
+            <h1>Spotify API 연동 성공!</h1>
+            {artistInfo && (
+                <div>
+                    <h2>{artistInfo.name}</h2>
+                    <img src={artistInfo.images[0]?.url} alt={artistInfo.name} width="200" />
+                    <p>팔로워: {artistInfo.followers.total.toLocaleString()}명</p>
+                    <p>장르: {artistInfo.genres.join(', ')}</p>
                 </div>
-            </div>
+            )}
         </div>
     );
 }
