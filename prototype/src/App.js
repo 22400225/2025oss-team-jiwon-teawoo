@@ -5,7 +5,7 @@ function App() {
     // React 상태(state)를 사용하여 데이터 관리
     const [query, setQuery] = useState(''); // 검색어 상태
     const [tracks, setTracks] = useState([]); // 노래 목록 상태
-    const [message, setMessage] = useState('듣고 싶은 노래를 검색해 보세요!'); // 메시지 상태
+    const [message, setMessage] = useState('듣고 싶은 노래를 검색해 보세요'); // 메시지 상태
 
     // 1. 검색 실행 함수 (수정됨)
     const handleSearch = async (event) => {
