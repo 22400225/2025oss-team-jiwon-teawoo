@@ -1,29 +1,32 @@
-/* === 기본 스타일 (Dark Theme & Mobile-First) === */
+/* === 기본 스타일 (Dark Theme & Centered) === */
 
 :root {
-    --bg-dark: #121212; /* 전체 배경 */
-    --bg-light: #181818; /* 컴포넌트 배경 */
-    --text-primary: #ffffff; /* 기본 텍스트 */
-    --text-secondary: #b3b3b3; /* 보조 텍스트 */
-    --brand-green: #1DB954; /* 스포티파이 브랜드 색상 */
-    --border-color: #282828; /* 테두리 색상 */
-    --shadow-color: rgba(0, 0, 0, 0.4); /* 그림자 색상 */
+    --bg-dark: #121212;
+    --bg-light: #181818;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --brand-green: #1DB954;
+    --border-color: #282828;
+    --shadow-color: rgba(0, 0, 0, 0.4);
 }
 
 body {
     margin: 0;
-    padding: 0;
     background-color: var(--bg-dark);
     font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     color: var(--text-primary);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+    box-sizing: border-box;
 }
 
 .container {
-    max-width: 800px; /* 노래 아이템이 세로로 나오므로 최대 너비를 줄임 */
-    margin: 0 auto;
-    padding: 1.5rem;
+    width: 100%;
+    max-width: 800px;
 }
 
 /* 검색 컨테이너 */
@@ -46,7 +49,7 @@ body {
 /* 검색 폼 */
 #search-form {
     display: flex;
-    flex-direction: column; /* 모바일 우선: 세로 */
+    flex-direction: column;
     gap: 0.8rem;
 }
 
@@ -59,18 +62,36 @@ body {
     background-color: #282828;
     color: var(--text-primary);
     box-sizing: border-box;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: all 0.2s ease-in-out;
 }
 
 #search-input::placeholder {
     color: var(--text-secondary);
 }
 
+#search-input:hover {
+    background-color: #333333;
+    border-color: #444444;
+}
+
 #search-input:focus {
     border-color: var(--brand-green);
     outline: none;
-    box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.5);
+    box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.5);
+    background-color: #333333;
 }
+
+/* *** 수정: 브라우저 자동 완성 시 배경색 강제 유지 *** */
+#search-input:-webkit-autofill,
+#search-input:-webkit-autofill:hover,
+#search-input:-webkit-autofill:focus,
+#search-input:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--text-primary) !important; /* 글자 색상 강제 */
+    -webkit-box-shadow: 0 0 0 30px #282828 inset !important; /* 배경색 강제 */
+    box-shadow: 0 0 0 30px #282828 inset !important;
+    caret-color: var(--text-primary); /* 커서 색상 */
+}
+
 
 #search-button {
     width: 100%;
@@ -83,6 +104,10 @@ body {
     border-radius: 30px;
     cursor: pointer;
     transition: background-color 0.2s, transform 0.1s;
+    /* *** 추가: 버튼 내부 텍스트 정렬 보장 *** */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #search-button:hover {
@@ -104,7 +129,6 @@ body {
 
 #song-list {
     display: grid;
-    /* 모든 화면 크기에서 1열 그리드 */
     grid-template-columns: 1fr;
     gap: 1.2rem;
 }
@@ -118,7 +142,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 12px var(--shadow-color);
     transition: transform 0.2s, background-color 0.2s;
-    position: relative; /* 플레이 버튼 위치 지정을 위해 */
+    position: relative;
 }
 
 .song-item:hover {
@@ -127,7 +151,7 @@ body {
 }
 
 .album-cover {
-    width: 90px; /* 커버 이미지 크기 조정 */
+    width: 90px;
     height: 90px;
     border-radius: 8px;
     margin-right: 1.5rem;
@@ -137,7 +161,7 @@ body {
 }
 
 .song-info {
-    flex-grow: 1; /* 남은 공간을 차지 */
+    flex-grow: 1;
     min-width: 0;
 }
 
@@ -159,22 +183,20 @@ body {
     text-overflow: ellipsis;
 }
 
-/* 플레이 버튼 */
 .play-button {
     background-color: var(--brand-green);
-    color: white;
     border: none;
-    border-radius: 50%; /* 원형 버튼 */
-    width: 45px; /* 버튼 크기 */
+    border-radius: 50%;
+    width: 45px;
     height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 1.5rem; /* 아이콘 크기 */
     transition: background-color 0.2s, transform 0.1s;
-    flex-shrink: 0; /* 공간이 부족해도 줄어들지 않도록 */
-    margin-left: 1rem; /* 정보와 버튼 사이 간격 */
+    flex-shrink: 0;
+    margin-left: 1rem;
+    padding: 0;
 }
 
 .play-button:hover {
@@ -182,45 +204,31 @@ body {
     transform: scale(1.05);
 }
 
+.play-button svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+}
+
 /* === 데스크탑 반응형 스타일 (768px 이상) === */
 @media (min-width: 768px) {
     #search-form {
-        flex-direction: row; /* 데스크탑에서는 가로로 배치 */
-        max-width: 600px; /* 검색 폼 너비 제한 */
+        flex-direction: row;
+        max-width: 600px;
         margin: 0 auto;
+        /* *** 추가: 검색창과 버튼을 수직으로 중앙 정렬 *** */
+        align-items: center;
     }
 
     #search-input {
         flex-grow: 1;
-        margin-right: 0.8rem; /* 입력창과 버튼 사이 간격 */
+        margin-right: 0.8rem;
     }
 
     #search-button {
         width: auto;
         padding-left: 35px;
         padding-right: 35px;
-    }
-
-    #search-container h1 {
-        font-size: 2.5rem;
-    }
-
-    .song-item {
-        padding: 1.2rem 1.5rem; /* 데스크탑에서 패딩 조금 늘림 */
-    }
-    .album-cover {
-        width: 100px;
-        height: 100px;
-    }
-    .song-info h3 {
-        font-size: 1.4rem;
-    }
-    .song-info p {
-        font-size: 1.05rem;
-    }
-    .play-button {
-        width: 50px;
-        height: 50px;
-        font-size: 1.7rem;
+        flex-shrink: 0; /* 버튼이 줄어들지 않도록 설정 */
     }
 }
