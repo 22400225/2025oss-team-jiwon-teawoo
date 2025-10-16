@@ -1,12 +1,12 @@
-/* === 기본 스타일 (수정된 중앙 정렬) === */
+/* === 기본 스타일 (Blue Theme & Centered) === */
 
 :root {
-    --bg-dark: #121212;
-    --bg-light: #181818;
-    --text-primary: #ffffff;
-    --text-secondary: #b3b3b3;
-    --brand-green: #1DB954;
-    --border-color: #282828;
+    --bg-dark: #0d1117; /* 어두운 남색 배경 */
+    --bg-light: #161b22; /* 컴포넌트 배경 */
+    --text-primary: #c9d1d9; /* 기본 텍스트 (밝은 회색) */
+    --text-secondary: #8b949e; /* 보조 텍스트 (어두운 회색) */
+    --brand-blue: #58a6ff; /* 포인트 블루 색상 */
+    --border-color: #30363d; /* 테두리 색상 */
     --shadow-color: rgba(0, 0, 0, 0.4);
 }
 
@@ -17,12 +17,11 @@ body {
     color: var(--text-primary);
 }
 
-/* *** 수정: body의 flex 정렬을 제거하고, container가 스스로 중앙 정렬하도록 변경 *** */
 .container {
     width: 100%;
-    max-width: 800px; /* 전체 콘텐츠의 최대 너비 */
-    margin: 0 auto;   /* 상하 마진 없이, 좌우 마진을 auto로 주어 중앙 정렬 */
-    padding: 2rem 1rem; /* 위아래 여백 추가 */
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
     box-sizing: border-box;
 }
 
@@ -32,13 +31,14 @@ body {
     margin-bottom: 2.5rem;
     padding: 1.5rem;
     background-color: var(--bg-light);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     box-shadow: 0 8px 24px var(--shadow-color);
 }
 
 #search-container h1 {
     font-size: 2.2rem;
-    color: var(--brand-green);
+    color: var(--brand-blue);
     margin-bottom: 1.5rem;
     font-weight: 700;
 }
@@ -56,27 +56,27 @@ body {
     font-size: 1.1rem;
     border: 1px solid var(--border-color);
     border-radius: 30px;
-    background-color: #282828;
+    background-color: var(--bg-dark);
     color: var(--text-primary);
     box-sizing: border-box;
     transition: all 0.2s ease-in-out;
 }
 
 #search-input::placeholder { color: var(--text-secondary); }
-#search-input:hover { background-color: #333333; border-color: #444444; }
+#search-input:hover { background-color: #21262d; border-color: #8b949e; }
 #search-input:focus {
-    border-color: var(--brand-green);
+    border-color: var(--brand-blue);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.5);
-    background-color: #333333;
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.5);
+    background-color: #21262d;
 }
 #search-input:-webkit-autofill,
 #search-input:-webkit-autofill:hover,
 #search-input:-webkit-autofill:focus,
 #search-input:-webkit-autofill:active {
     -webkit-text-fill-color: var(--text-primary) !important;
-    -webkit-box-shadow: 0 0 0 30px #282828 inset !important;
-    box-shadow: 0 0 0 30px #282828 inset !important;
+    -webkit-box-shadow: 0 0 0 30px var(--bg-dark) inset !important;
+    box-shadow: 0 0 0 30px var(--bg-dark) inset !important;
     caret-color: var(--text-primary);
 }
 
@@ -85,8 +85,8 @@ body {
     padding: 14px 20px;
     font-size: 1.1rem;
     font-weight: bold;
-    color: white;
-    background-color: var(--brand-green);
+    color: #0d1117; /* 버튼 텍스트는 어둡게 */
+    background-color: var(--brand-blue);
     border: none;
     border-radius: 30px;
     cursor: pointer;
@@ -96,13 +96,9 @@ body {
     justify-content: center;
 }
 
-#search-button:hover { background-color: #1ed760; transform: translateY(-2px); }
+#search-button:hover { background-color: #79c0ff; transform: translateY(-2px); }
 
 /* 노래 목록 */
-#song-list-container {
-    /* 이 컨테이너는 이제 .container의 자식으로 자연스럽게 중앙 정렬됩니다. */
-}
-
 .message {
     text-align: center;
     color: var(--text-secondary);
@@ -113,7 +109,7 @@ body {
 #song-list {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1rem; /* 간격 살짝 줄임 */
+    gap: 1rem;
 }
 
 /* 개별 노래 아이템 */
@@ -121,41 +117,40 @@ body {
     display: flex;
     align-items: center;
     background-color: var(--bg-light);
+    border: 1px solid var(--border-color);
     padding: 1rem;
     border-radius: 10px;
-    box-shadow: 0 4px 12px var(--shadow-color);
     transition: transform 0.2s, background-color 0.2s;
 }
 
-.song-item:hover { transform: translateY(-5px); background-color: #282828; }
+.song-item:hover { transform: translateY(-5px); background-color: #21262d; }
 
 .album-cover {
-    width: 70px; /* 크기 살짝 줄여서 공간 확보 */
+    width: 70px;
     height: 70px;
     border-radius: 8px;
     margin-right: 1rem;
     object-fit: cover;
-    flex-shrink: 0; /* 중요: 이미지가 찌그러지지 않도록 함 */
+    flex-shrink: 0;
 }
 
-/* *** 수정: 플레이 버튼이 밀려나지 않도록 flexbox 속성 조정 *** */
 .song-info {
-    flex-grow: 1; /* 남는 공간을 모두 차지 */
-    min-width: 0; /* 중요: 이 속성이 없으면 자식 요소(텍스트)가 넘칠 때 부모가 줄어들지 않아 버튼이 밀려남 */
+    flex-grow: 1;
+    min-width: 0;
 }
 
 .song-info h3, .song-info p {
     margin: 0;
-    white-space: nowrap;      /* 줄바꿈 방지 */
-    overflow: hidden;         /* 넘치는 부분 숨김 */
-    text-overflow: ellipsis;  /* 넘치는 텍스트를 ...으로 표시 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .song-info h3 { font-size: 1.1rem; color: var(--text-primary); margin-bottom: 0.3rem; }
 .song-info p { font-size: 0.9rem; color: var(--text-secondary); }
 
 .play-button {
-    background-color: var(--brand-green);
+    background-color: var(--brand-blue);
     border: none;
     border-radius: 50%;
     width: 45px;
@@ -165,13 +160,13 @@ body {
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.2s, transform 0.1s;
-    flex-shrink: 0; /* 중요: 공간이 부족해도 버튼 크기를 유지함 */
+    flex-shrink: 0;
     margin-left: 1rem;
     padding: 0;
 }
 
-.play-button:hover { background-color: #1ed760; transform: scale(1.05); }
-.play-button svg { width: 20px; height: 20px; fill: white; }
+.play-button:hover { background-color: #79c0ff; transform: scale(1.05); }
+.play-button svg { width: 18px; height: 18px; fill: #0d1117; } /* 아이콘 색상도 어둡게 */
 
 /* === 데스크탑 반응형 스타일 (768px 이상) === */
 @media (min-width: 768px) {
