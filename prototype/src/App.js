@@ -7,43 +7,32 @@ function App() {
     const [tracks, setTracks] = useState([]); // 노래 목록 상태
     const [message, setMessage] = useState('듣고 싶은 노래를 검색해 보세요!'); // 메시지 상태
 
-    // Spotify API 키를 .env 파일에서 불러오기
-    const clientId = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
-    const clientSecret = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET;
-
-    // 1. Access Token 발급 함수
-    const getAccessToken = async () => {
-        const tokenUrl = 'https://accounts.spotify.com/api/token';
-        const authString = btoa(`${clientId}:${clientSecret}`);
-        try {
-            const response = await fetch(tokenUrl, {
-                method: 'POST',
-                headers: { 'Authorization': `Basic ${authString}`, 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'grant_type=client_credentials',
-            });
-            if (!response.ok) throw new Error('인증 실패');
-            const data = await response.json();
-            return data.access_token;
-        } catch (error) {
-            console.error('Access Token 발급 오류:', error);
-            setMessage('API 인증에 실패했습니다. 키를 확인해주세요.');
-            return null;
-        }
-    };
-
-    // 2. 검색 실행 함수
+    // 검색 실행 함수
     const handleSearch = async (event) => {
         event.preventDefault(); // 폼 제출 시 새로고침 방지
-        if (!query) return; // 검색어가 없으면 실행하지 않음
+        if (!query.trim()) return; // 검색어가 없으면 실행하지 않음
 
         setMessage(`"${query}" 검색 중... 🎧`);
         setTracks([]); // 이전 검색 결과 초기화
 
-        const accessToken = await getAccessToken();
-        if (!accessToken) return;
+        let accessToken;
+        try {
+            // 백엔드 역할을 하는 Netlify 함수를 호출해서 Access Token을 받아옵니다.
+            const response = await fetch('/.netlify/functions/spotify-auth');
+            const data = await response.json();
+
+            if (!response.ok || data.error) {
+                throw new Error(data.error || 'API 인증에 실패했습니다.');
+            }
+            accessToken = data.accessToken;
+        } catch (error) {
+            console.error('Access Token 발급 오류:', error);
+            setMessage(error.message);
+            return;
+        }
 
         // Spotify API 검색 요청
-        const searchUrl = `https://api.spotify.com/v1/search?q=$${encodeURIComponent(query)}&type=track&limit=50`; // 50곡만 가져오도록 단순화
+        const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=50`;
         try {
             const response = await fetch(searchUrl, {
                 headers: { 'Authorization': `Bearer ${accessToken}` },
@@ -63,11 +52,11 @@ function App() {
         }
     };
 
-    // 3. 화면을 그리는 부분 (JSX)
+    // 화면을 그리는 부분 (JSX)
     return (
         <div className="container">
             <div id="search-container">
-                <h1>🎵 Spotify 노래 검색</h1>
+                <h1>Handong Music Service</h1>
                 <form id="search-form" onSubmit={handleSearch}>
                     <input
                         type="text"
@@ -83,22 +72,35 @@ function App() {
             <div id="song-list-container">
                 {message && <p className="message">{message}</p>}
                 <div id="song-list">
-                    {tracks.map((track) => (
-                        <div className="song-item" key={track.id}>
-                            <img
-                                src={track.album.images[1]?.url || track.album.images[0]?.url}
-                                alt={`${track.album.name} 앨범 커버`}
-                                className="album-cover"
-                            />
-                            <div className="song-info">
-                                <h3>{track.name}</h3>
-                                <p>{track.artists.map(artist => artist.name).join(', ')} - <em>{track.album.name}</em></p>
-                                <a href={track.external_urls.spotify} target="_blank" rel="noopener noreferrer">
-                                    Spotify에서 듣기
-                                </a>
+                    {tracks.map((track) => {
+                        // 마우스 오버 시 보여줄 전체 텍스트를 미리 변수로 만듭니다.
+                        const fullArtistInfo = `${track.artists.map(artist => artist.name).join(', ')} - ${track.album.name}`;
+
+                        return (
+                            <div className="song-item" key={track.id}>
+                                <img
+                                    src={track.album.images[1]?.url || track.album.images[0]?.url || 'https://via.placeholder.com/100'}
+                                    alt={`${track.album.name} 앨범 커버`}
+                                    className="album-cover"
+                                />
+                                <div className="song-info">
+                                    <h3 title={track.name}>{track.name}</h3>
+                                    <p title={fullArtistInfo}>
+                                        {track.artists.map(artist => artist.name).join(', ')} - <em>{track.album.name}</em>
+                                    </p>
+                                </div>
+                                <button
+                                    className="play-button"
+                                    onClick={() => window.open(track.external_urls.spotify, '_blank')}
+                                    aria-label={`${track.name} Spotify에서 재생`}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                                        <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/>
+                                    </svg>
+                                </button>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         </div>
@@ -106,3 +108,4 @@ function App() {
 }
 
 export default App;
+
