@@ -5,7 +5,7 @@ function App() {
     // React 상태(state)를 사용하여 데이터 관리
     const [query, setQuery] = useState(''); // 검색어 상태
     const [tracks, setTracks] = useState([]); // 노래 목록 상태
-    const [message, setMessage] = useState('듣고 싶은 노래를 검색해 보세요'); // 메시지 상태
+    const [message, setMessage] = useState('듣고 싶은 노래를 검색해 보세요!'); // 메시지 상태
 
     // 검색 실행 함수
     const handleSearch = async (event) => {
@@ -56,7 +56,7 @@ function App() {
     return (
         <div className="container">
             <div id="search-container">
-                <h1>Handong Music Service</h1>
+                <h1>🎵 Handong Music Service</h1>
                 <form id="search-form" onSubmit={handleSearch}>
                     <input
                         type="text"
@@ -72,28 +72,35 @@ function App() {
             <div id="song-list-container">
                 {message && <p className="message">{message}</p>}
                 <div id="song-list">
-                    {tracks.map((track) => (
-                        <div className="song-item" key={track.id}>
-                            <img
-                                src={track.album.images[1]?.url || track.album.images[0]?.url || 'https://via.placeholder.com/100'} // 이미지 없을 때 기본 이미지
-                                alt={`${track.album.name} 앨범 커버`}
-                                className="album-cover"
-                            />
-                            <div className="song-info">
-                                <h3>{track.name}</h3>
-                                <p>{track.artists.map(artist => artist.name).join(', ')} - <em>{track.album.name}</em></p>
+                    {tracks.map((track) => {
+                        // 마우스 오버 시 보여줄 전체 텍스트를 미리 변수로 만듭니다.
+                        const fullArtistInfo = `${track.artists.map(artist => artist.name).join(', ')} - ${track.album.name}`;
+
+                        return (
+                            <div className="song-item" key={track.id}>
+                                <img
+                                    src={track.album.images[1]?.url || track.album.images[0]?.url || 'https://via.placeholder.com/100'}
+                                    alt={`${track.album.name} 앨범 커버`}
+                                    className="album-cover"
+                                />
+                                <div className="song-info">
+                                    <h3 title={track.name}>{track.name}</h3>
+                                    <p title={fullArtistInfo}>
+                                        {track.artists.map(artist => artist.name).join(', ')} - <em>{track.album.name}</em>
+                                    </p>
+                                </div>
+                                <button
+                                    className="play-button"
+                                    onClick={() => window.open(track.external_urls.spotify, '_blank')}
+                                    aria-label={`${track.name} Spotify에서 재생`}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                                        <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/>
+                                    </svg>
+                                </button>
                             </div>
-                            <button
-                                className="play-button"
-                                onClick={() => window.open(track.external_urls.spotify, '_blank')}
-                                aria-label={`${track.name} Spotify에서 재생`}
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                                    <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z" />
-                                </svg>
-                            </button>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         </div>
@@ -101,3 +108,4 @@ function App() {
 }
 
 export default App;
+
