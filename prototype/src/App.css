@@ -1,108 +1,169 @@
+/* === 기본 & 모바일 스타일 (Mobile-First) === */
+
+/* 전체 레이아웃 */
 .container {
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 1200px; /* 데스크탑에서 너무 넓어지지 않게 최대 너비 설정 */
+    margin: 0 auto; /* 중앙 정렬 */
+    padding: 1.5rem; /* 내부 여백 */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
 }
 
-/* 검색창 스타일 */
+/* 검색 컨테이너 */
 #search-container {
     text-align: center;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 25px;
+    margin-bottom: 2rem;
 }
 
+#search-container h1 {
+    font-size: 1.8rem;
+    color: #1DB954; /* 스포티파이 색상 */
+    margin-bottom: 1rem;
+}
+
+/* 검색 폼 */
 #search-form {
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* 모바일에서는 세로로 쌓음 */
+    gap: 0.5rem; /* 아이템 사이 간격 */
 }
 
 #search-input {
-    width: 70%;
-    padding: 12px 20px;
-    font-size: 1em;
-    border: 2px solid #ddd;
-    border-radius: 50px 0 0 50px;
-    outline: none;
-    transition: border-color 0.3s;
-}
-
-#search-input:focus {
-    border-color: #1DB954;
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    box-sizing: border-box; /* 패딩과 테두리를 너비에 포함 */
 }
 
 #search-button {
-    padding: 12px 25px;
-    font-size: 1em;
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1rem;
     font-weight: bold;
-    border: none;
-    background-color: #1DB954;
     color: white;
+    background-color: #1DB954;
+    border: none;
+    border-radius: 25px;
     cursor: pointer;
-    border-radius: 0 50px 50px 0;
-    transition: background-color 0.3s;
+    transition: background-color 0.2s;
 }
 
 #search-button:hover {
     background-color: #1ed760;
 }
 
-/* 노래 목록 스타일 */
+/* 노래 목록 */
 #song-list-container {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    min-height: 100px;
-    /* 컨테이너 최소 높이 */
+    margin-top: 2rem;
 }
 
+.message {
+    text-align: center;
+    color: #777;
+    font-size: 1.1rem;
+}
+
+#song-list {
+    display: grid;
+    /* 모바일에서는 1열 그리드 */
+    grid-template-columns: 1fr;
+    gap: 1.5rem; /* 아이템 사이 간격 */
+}
+
+/* 개별 노래 아이템 */
 .song-item {
     display: flex;
     align-items: center;
-    padding: 15px 10px;
-    border-bottom: 1px solid #eee;
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
 }
 
-.song-item:last-child {
-    border-bottom: none;
+.song-item:hover {
+    transform: translateY(-5px);
 }
 
 .album-cover {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 4px;
-    margin-right: 15px;
-    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 6px;
+    margin-right: 1rem;
+    object-fit: cover; /* 이미지가 찌그러지지 않게 */
+    flex-shrink: 0; /* 이미지가 줄어들지 않도록 */
+}
+
+.song-info {
+    min-width: 0; /* flex 아이템이 넘칠 때 줄바꿈을 위함 */
 }
 
 .song-info h3 {
-    margin: 0 0 5px 0;
-    font-size: 1.1em;
-    color: #222;
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+    /* 긴 제목은 ...으로 표시 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.song-info p,
-.song-info a {
+.song-info p {
     margin: 0;
-    font-size: 0.9em;
+    font-size: 0.9rem;
+    color: #555;
+    /* 긴 아티스트명은 ...으로 표시 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .song-info a {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
     color: #1DB954;
     text-decoration: none;
+    font-weight: bold;
 }
 
-.song-info a:hover {
-    text-decoration: underline;
+/* === 태블릿 반응형 스타일 (768px 이상) === */
+@media (min-width: 768px) {
+    #search-container h1 {
+        font-size: 2.2rem;
+    }
+
+    /* 검색창을 가로로 배치 */
+    #search-form {
+        flex-direction: row;
+    }
+
+    #search-input {
+        flex-grow: 1; /* 입력창이 남는 공간을 모두 차지 */
+    }
+
+    #search-button {
+        width: auto; /* 버튼 너비를 내용에 맞게 자동 조절 */
+        flex-shrink: 0;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    /* 노래 목록을 2열 그리드로 변경 */
+    #song-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-/* 메시지 스타일 */
-.message {
-    text-align: center;
-    font-size: 1.1em;
-    padding: 40px 10px;
-    color: #555;
+/* === 데스크탑 반응형 스타일 (1024px 이상) === */
+@media (min-width: 1024px) {
+    #search-container h1 {
+        font-size: 2.5rem;
+    }
+    
+    /* 노래 목록을 3열 그리드로 변경 */
+    #song-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
