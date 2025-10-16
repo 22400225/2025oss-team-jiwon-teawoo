@@ -72,7 +72,7 @@ body {
 .message { text-align: center; color: var(--text-secondary); font-size: 1rem; margin-top: 2rem; }
 #song-list { display: grid; grid-template-columns: 1fr; gap: 0.5rem; } /* 아이템 간격 최소화 */
 
-/* *** 수정: 개별 노래 아이템을 훨씬 작게 만듦 *** */
+/* 개별 노래 아이템 */
 .song-item {
     display: flex;
     align-items: center;
@@ -81,12 +81,15 @@ body {
     padding: 0.6rem; /* 내부 여백 대폭 축소 */
     border-radius: 8px;
     overflow: hidden; /* 내부 요소가 경계를 넘지 않도록 */
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out; /* 부드러운 효과를 위한 transition 추가 */
 }
 
+/* *** 추가: 노래 블록 호버 효과 *** */
 .song-item:hover {
     transform: translateY(-4px); /* 마우스를 올리면 살짝 뜨는 효과 */
     background-color: #21262d; /* 배경색도 살짝 변경 */
 }
+
 
 .album-cover {
     width: 45px; /* 앨범 커버 대폭 축소 */
