@@ -73,7 +73,7 @@ function App() {
                     <nav id="search-container" aria-label="음악 검색">
                         {/* 기존 H1 제거: Header 내 Logo 영역에 제목 역할이 포함됨 */}
                         <form id="search-form" role="search" onSubmit={handleSearch}>
-                            <label htmlFor="search-input" className="sr-only">검색어를 입력하세요</label>
+                            <label htmlFor="search-input" className="sr-only">검색어 입력</label>
                             <input
                                 type="text"
                                 id="search-input"
