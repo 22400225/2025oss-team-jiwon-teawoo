@@ -19,7 +19,7 @@ function App() {
 
         let accessToken;
         try {
-            const response = await fetch('/.netlify/functions/spotify-auth');
+            const response = await fetch('./api/spotify');
             const data = await response.json();
 
             if (!response.ok || data.error) {
