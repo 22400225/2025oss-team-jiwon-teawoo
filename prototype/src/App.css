@@ -149,7 +149,6 @@ body {
     border-radius: 20px;
     background-color: var(--bg-light);
     color: var(--text-primary);
-    background-color: #21262d;
     transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
@@ -158,6 +157,7 @@ body {
     border-color: var(--brand-blue);
     box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
 }
+
 
 #search-button {
     padding: 10px 16px;
@@ -281,34 +281,7 @@ body {
     fill: var(--bg-dark); 
 }
 
-.add-to-playlist-container { 
-    position: relative; 
-}
-
-.playlist-dropdown {
-    position: absolute; 
-    right: 0; 
-    bottom: 110%;
-    background-color: var(--bg-light); 
-    border: 1px solid var(--border-color);
-    border-radius: 4px; 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    width: 200px; 
-    z-index: 20; 
-    overflow: hidden; 
-    padding: 4px;
-}
-
-.playlist-dropdown-item {
-    padding: 12px 16px; 
-    cursor: pointer;
-    font-size: 0.9rem;
-}
-
-.playlist-dropdown-item:hover { 
-    background-color: var(--border-color); 
-}
-
+/* --- 모달 공통 스타일 --- */
 .modal-overlay {
     position: fixed; 
     top: 0; 
@@ -336,6 +309,7 @@ body {
     margin-top: 0; 
 }
 
+/* --- 플레이리스트 생성 모달 --- */
 .modal-form label { 
     display: block; 
     margin-bottom: 8px; 
@@ -376,6 +350,60 @@ body {
     color: var(--bg-dark); 
 }
 
+/* --- 노래 추가 모달 --- */
+.add-song-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background-color: var(--bg-dark);
+    border-radius: 8px;
+    margin: 16px 0;
+}
+.add-song-info img {
+    width: 64px;
+    height: 64px;
+    border-radius: 4px;
+}
+.add-song-info div {
+    display: flex;
+    flex-direction: column;
+}
+.add-song-info strong {
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+.add-song-info span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.modal-playlist-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 40vh;
+    overflow-y: auto;
+}
+.modal-playlist-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    gap: 12px;
+}
+.modal-playlist-item:hover {
+    background-color: var(--border-color);
+}
+.modal-playlist-item .playlist-cover {
+    width: 48px;
+    height: 48px;
+}
+
+
+/* --- 알림 메시지 --- */
 .notification {
     position: fixed; 
     bottom: 20px; 
@@ -431,6 +459,7 @@ body {
     .action-button svg { width: 18px; height: 18px; }
 }
 
+/* 자동 완성 스타일 재정의 */
 #search-input:-webkit-autofill,
 #search-input:-webkit-autofill:hover,
 #search-input:-webkit-autofill:focus,
@@ -440,3 +469,4 @@ body {
     box-shadow: 0 0 0 30px var(--bg-light) inset !important;
     caret-color: var(--text-primary);
 }
+

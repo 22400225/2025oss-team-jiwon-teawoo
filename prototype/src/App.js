@@ -45,6 +45,35 @@ function CreatePlaylistModal({ onClose, onCreate }) {
     );
 }
 
+// 노래를 플레이리스트에 추가하는 모달 컴포넌트
+function AddToPlaylistModal({ onClose, onSelectPlaylist, playlists, track }) {
+    if (!track) return null;
+
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <h2>플레이리스트에 추가</h2>
+                <div className="add-song-info">
+                    <img src={track.album.images[2]?.url || 'https://via.placeholder.com/64'} alt={track.name} />
+                    <div>
+                        <strong>{track.name}</strong>
+                        <span>{track.artists.map(a => a.name).join(', ')}</span>
+                    </div>
+                </div>
+                <ul className="modal-playlist-list">
+                    {playlists.map(playlist => (
+                        <li key={playlist.id} className="modal-playlist-item" onClick={() => onSelectPlaylist(playlist.id)}>
+                            <img src={playlist.cover} alt={`${playlist.name} cover`} className="playlist-cover" />
+                            <span>{playlist.name}</span>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+    );
+}
+
+
 function App() {
     // React 상태(state)를 사용하여 데이터 관리
     const [query, setQuery] = useState(''); // 검색어 상태
@@ -54,8 +83,12 @@ function App() {
     // 플레이리스트 관련 상태
     const [playlists, setPlaylists] = useState([]);
     const [activeView, setActiveView] = useState({ type: 'search' }); // 'search' 또는 'playlist'
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [dropdownOpenFor, setDropdownOpenFor] = useState(null); // 드롭다운 메뉴 ID
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+    // 노래 추가 모달 관련 상태
+    const [isAddSongModalOpen, setIsAddSongModalOpen] = useState(false);
+    const [trackToAdd, setTrackToAdd] = useState(null);
+
     const [notification, setNotification] = useState('');
 
     // 알림 메시지 표시 함수 (alert 대체)
@@ -110,12 +143,24 @@ function App() {
             tracks: [],
         };
         setPlaylists([...playlists, newPlaylist]);
-        setIsModalOpen(false);
+        setIsCreateModalOpen(false);
         showNotification(`'${name}' 플레이리스트가 생성되었습니다.`);
     };
 
+    // '+' 버튼 클릭 처리
+    const handleAddSongClick = (track) => {
+        if (playlists.length === 0) {
+            showNotification('먼저 플레이리스트를 생성해주세요!');
+            return;
+        }
+        setTrackToAdd(track);
+        setIsAddSongModalOpen(true);
+    };
+
     // 노래를 플레이리스트에 추가
-    const handleAddSongToPlaylist = (playlistId, trackToAdd) => {
+    const handleAddSongToPlaylist = (playlistId) => {
+        if (!trackToAdd) return;
+
         setPlaylists(playlists.map(p => {
             if (p.id === playlistId) {
                 if (p.tracks.some(t => t.id === trackToAdd.id)) {
@@ -127,7 +172,9 @@ function App() {
             }
             return p;
         }));
-        setDropdownOpenFor(null);
+
+        setIsAddSongModalOpen(false);
+        setTrackToAdd(null);
     };
 
     // 노래 아이템 렌더링 함수
@@ -151,29 +198,9 @@ function App() {
                         <svg viewBox="0 0 384 512"><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z" /></svg>
                     </button>
                     {!isPlaylistView && (
-                        <div className="add-to-playlist-container">
-                            <button
-                                className="action-button add-song-btn"
-                                onClick={() => {
-                                    if (playlists.length === 0) {
-                                        showNotification('먼저 플레이리스트를 생성해주세요!');
-                                    } else {
-                                        setDropdownOpenFor(dropdownOpenFor === track.id ? null : track.id);
-                                    }
-                                }}
-                            >
-                                <svg viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" /></svg>
-                            </button>
-                            {dropdownOpenFor === track.id && (
-                                <div className="playlist-dropdown">
-                                    {playlists.map(p => (
-                                        <div key={p.id} className="playlist-dropdown-item" onClick={() => handleAddSongToPlaylist(p.id, track)}>
-                                            {p.name}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
+                        <button className="action-button add-song-btn" onClick={() => handleAddSongClick(track)}>
+                            <svg viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" /></svg>
+                        </button>
                     )}
                 </div>
             </div>
@@ -204,7 +231,7 @@ function App() {
     return (
         <div className="app-layout">
             <aside className="sidebar">
-                <h2>Playlist</h2>
+                <h2>플레이리스트</h2>
                 <ul className="playlist-list">
                     {playlists.map(p => (
                         <li
@@ -222,7 +249,7 @@ function App() {
             <main className="main-content">
                 <header className="header">
                     <h1 onClick={() => setActiveView({ type: 'search' })}>Handong Music</h1>
-                    <button className="add-playlist-btn" onClick={() => setIsModalOpen(true)}>+</button>
+                    <button className="add-playlist-btn" onClick={() => setIsCreateModalOpen(true)}>+</button>
                 </header>
                 <div id="search-container">
                     <form id="search-form" onSubmit={handleSearch}>
@@ -241,10 +268,19 @@ function App() {
                 </div>
             </main>
 
-            {isModalOpen && <CreatePlaylistModal onClose={() => setIsModalOpen(false)} onCreate={handleCreatePlaylist} />}
+            {isCreateModalOpen && <CreatePlaylistModal onClose={() => setIsCreateModalOpen(false)} onCreate={handleCreatePlaylist} />}
+            {isAddSongModalOpen &&
+                <AddToPlaylistModal
+                    onClose={() => setIsAddSongModalOpen(false)}
+                    onSelectPlaylist={handleAddSongToPlaylist}
+                    playlists={playlists}
+                    track={trackToAdd}
+                />
+            }
             <div className={`notification ${notification ? 'show' : ''}`}>{notification}</div>
         </div>
     );
 }
 
 export default App;
+
