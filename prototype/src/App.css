@@ -1,3 +1,6 @@
+/* src/App.css */
+
+/* ------------------- 기본 레이아웃 및 컨테이너 ------------------- */
 .app-container {
     display: flex;
     width: 100%;
@@ -10,8 +13,8 @@
     background-color: var(--color-sidebar);
     padding: 15px 10px;
     border-right: 1px solid var(--color-border);
-    flex-shrink: 0; /* 크기 유지 */
-    overflow-y: auto; /* 내용이 많아지면 스크롤 가능 */
+    flex-shrink: 0;
+    overflow-y: auto;
 }
 
 .logo {
@@ -23,6 +26,7 @@
 
 .playlist-list {
     list-style: none;
+    padding: 0;
 }
 
 .add-folder-btn {
@@ -52,13 +56,14 @@
     font-weight: 700;
 }
 
+
 /* ================== 2. 메인 콘텐츠 스타일 ================== */
 .main-content {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     padding: 0 20px;
-    overflow: hidden; /* 내부 스크롤을 위해 필요 */
+    overflow: hidden;
 }
 
 /* 검색 및 필터 영역 */
@@ -68,20 +73,20 @@
     align-items: center;
     padding: 15px 0 10px 0;
     border-bottom: 1px solid var(--color-border);
-    flex-shrink: 0; /* 고정 */
+    flex-shrink: 0;
 }
 
 .search-bar {
     display: flex;
     align-items: center;
-    background-color: var(--color-hover); /* 검색창 배경 */
+    background-color: var(--color-hover);
     border-radius: 8px;
     padding: 5px 10px;
     flex-grow: 1;
     max-width: 400px;
 }
 
-#music-search {
+.search-bar input[type="search"] {
     border: none;
     background: none;
     color: var(--color-foreground);
@@ -90,11 +95,11 @@
     font-size: 14px;
 }
 
-#music-search::placeholder {
+.search-bar input[type="search"]::placeholder {
     color: var(--color-secondary);
 }
 
-#music-search:focus {
+.search-bar input[type="search"]:focus {
     outline: none;
 }
 
@@ -104,10 +109,13 @@
     color: var(--color-secondary);
     cursor: pointer;
     margin-left: 5px;
+    /* 버튼 내부 아이콘 크기 조정 */
+    padding: 0; 
+    display: flex;
+    align-items: center;
 }
 
 .controls-area {
-    /* 스케치 우측 상단의 설정/추가 버튼 영역 */
     margin-left: 20px;
 }
 
@@ -126,86 +134,157 @@
     background-color: var(--color-hover);
 }
 
-/* ================== 음악 목록 헤더 ================== */
+
+/* ================== 음악 목록 헤더 스타일 (.music-list-header) ================== */
 .music-list-header {
     display: flex;
+    /* Flex 항목으로 사용되지 않으므로 flex-basis 대신 width 비율 사용 */
     padding: 10px 0;
     font-weight: 600;
     color: var(--color-secondary);
     border-bottom: 1px solid var(--color-border);
-    flex-shrink: 0; /* 고정 */
+    flex-shrink: 0;
     margin-bottom: 5px;
 }
 
-.header-col {
+.music-list-header .header-col {
     padding: 0 8px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    cursor: pointer; /* 정렬 기능이 있음을 암시 */
+    cursor: default; /* 정렬 기능이 없다면 default */
 }
 
-.header-col:hover {
-    color: var(--color-foreground);
+/* 헤더 컬럼 너비 설정: 목록 항목 (.song-item)과 일치시켜야 함 */
+.music-list-header .img-col {
+    width: 55px; /* (커버 40px + 마진 15px)와 유사하게 설정 */
+    flex-shrink: 0;
+    text-align: left;
+}
+.music-list-header .title-col {
+    flex-grow: 1; /* 제목/아티스트 영역이 가장 넓음 */
+}
+.music-list-header .artist-col {
+    /* 현재 구조에서는 .song-info에 제목/아티스트가 함께 있으므로, 이 컬럼은 필요 없거나 숨겨야 함 */
+    display: none;
+}
+.music-list-header .album-col {
+    /* 현재 구조에서는 .song-info에 제목/아티스트가 함께 있으므로, 이 컬럼은 필요 없거나 숨겨야 함 */
+    display: none; 
+}
+.music-list-header .duration-col {
+    width: 80px; /* 재생 시간 컬럼 + 재생 버튼 공간 */
+    text-align: right;
+    flex-shrink: 0;
+    padding-right: 15px; /* 재생 버튼 영역에 맞춤 */
 }
 
-/* ================== 음악 목록 본문 (아이템) ================== */
+
+/* ================== 음악 목록 본문 (아이템) 스타일 ================== */
 .music-list-body {
-    overflow-y: auto; /* 목록이 길어지면 스크롤 */
-    padding-right: 5px; /* 스크롤바 공간 확보 */
+    overflow-y: auto; 
+    padding-right: 5px; 
 }
 
-.music-item {
+/* 결과 메시지 스타일 */
+.music-list-body .message {
+    padding: 20px;
+    text-align: center;
+    color: var(--color-secondary);
+}
+
+#song-list {
+    /* 목록 컨테이너 역할. <ul> 태그 대신 사용 */
+    padding: 0;
+    margin: 0;
+}
+
+.song-item {
+    /* 새로운 Flex 기반 아이템 레이아웃 */
     display: flex;
     align-items: center;
-    padding: 8px 0;
+    padding: 8px 0; 
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.1s, color 0.1s;
 }
 
-.music-item:hover {
+.song-item:hover {
     background-color: var(--color-hover);
 }
 
-.music-item[aria-selected="true"],
-.music-item:focus {
-    /* 현재 재생/선택된 아이템 스타일 */
-    background-color: var(--color-active);
-    color: var(--color-foreground);
-    outline: none; /* 접근성을 위해 outline을 커스텀하거나 유지하는 것이 좋음 */
+/* E. 앨범 커버 스타일 */
+.album-cover {
+    width: 40px; 
+    height: 40px;
+    object-fit: cover;
+    margin: 0 15px 0 8px; /* 헤더의 IMG 컬럼 시작점과 맞추기 위해 왼쪽 패딩 8px와 유사하게 조정 */
+    border-radius: 4px; 
+    flex-shrink: 0;
 }
 
-.item-col {
-    padding: 0 8px;
+/* D. 노래 정보 (제목/아티스트/앨범) 스타일 조정 */
+.song-info {
+    flex-grow: 1; 
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; 
+    min-width: 0; /* Flexbox에서 텍스트 넘침 방지 */
+}
+
+.song-info h3 {
+    font-size: 15px;
+    font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin: 0;
+    line-height: 1.4;
 }
 
-/* ================== 컬럼 너비 설정 (중요) ================== */
-.img-col {
-    width: 50px; /* 앨범 아트 */
-    flex-shrink: 0;
+.song-info p {
+    font-size: 12px;
+    color: var(--color-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
 }
-.title-col {
-    flex-grow: 2; /* 제목이 가장 넓음 */
+
+.song-info em {
+    font-style: normal; 
 }
-.artist-col {
-    flex-grow: 2; /* 아티스트 */
-}
-.album-col {
-    flex-grow: 2; /* 앨범 */
-    display: none; /* 모바일 등에서는 숨길 수 있음. 데스크탑 기준으로는 보임 */
-}
-.duration-col {
-    width: 50px; /* 재생 시간 고정 */
+
+/* F. 재생 시간 스타일 */
+.track-duration {
+    width: 40px; /* 시간 텍스트가 차지할 공간 */
     text-align: right;
     flex-shrink: 0;
     color: var(--color-secondary);
+    font-size: 13px;
+    margin-right: 10px; /* 재생 버튼과의 간격 */
 }
 
-/* 현재 재생 중인 항목의 텍스트 색상 */
-.music-item:not([aria-selected="true"]) .title-col:contains("현재 재생 중") {
-    color: var(--color-accent); /* 강조 색상 */
+/* G. 재생 버튼 스타일 */
+.play-button {
+    width: 20px;
+    height: 20px;
+    background: none;
+    border: none;
+    color: var(--color-secondary);
+    cursor: pointer;
+    margin-right: 8px; /* 메인 영역 오른쪽 끝에 맞춤 */
+    padding: 0;
+    flex-shrink: 0;
+    transition: color 0.15s;
+}
+
+.play-button svg {
+    fill: currentColor;
+    width: 100%;
+    height: 100%;
+}
+
+.play-button:hover {
+    color: var(--color-foreground);
 }
