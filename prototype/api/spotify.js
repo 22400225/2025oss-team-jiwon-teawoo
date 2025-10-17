@@ -1,14 +1,15 @@
-// /api/spotify.js
-
 const axios = require('axios');
 
-// Vercel의 서버리스 함수 형식으로 변경
-module.exports = async (req, res) => {
-    const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID; // REACT_APP_ 접두사 제거
-    const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET; // REACT_APP_ 접두사 제거
+exports.handler = async function (event, context) {
+    const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
+    const CLIENT_SECRET = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET;
     const authHeader = `Basic ${Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64')}`;
 
     try {
+        console.log('📡 Spotify 토큰 요청 시작');
+        console.log('CLIENT_ID:', CLIENT_ID ? '✅ 존재함' : '❌ 없음');
+        console.log('CLIENT_SECRET:', CLIENT_SECRET ? '✅ 존재함' : '❌ 없음');
+
         const response = await axios.post(
             'https://accounts.spotify.com/api/token',
             'grant_type=client_credentials',
@@ -20,15 +21,39 @@ module.exports = async (req, res) => {
             }
         );
 
-        // 성공 시, res.status().json()으로 응답
-        res.status(200).json({ accessToken: response.data.access_token });
+        console.log('✅ Spotify 토큰 요청 성공');
+        console.log('응답 상태 코드:', response.status);
+        console.log('응답 데이터:', response.data);
 
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ accessToken: response.data.access_token }),
+        };
     } catch (error) {
-        const errorMessage = error.response ? error.response.data : error.message;
-        console.error('Spotify 토큰 요청 에러:', errorMessage);
-        
-        // 실패 시, res.status().json()으로 응답
-        const statusCode = error.response ? error.response.status : 500;
-        res.status(statusCode).json({ error: 'Spotify 토큰을 가져오는 데 실패했습니다.' });
+        console.error('❌ Spotify 토큰 요청 실패');
+
+        if (error.response) {
+            // 서버가 응답했지만 상태 코드가 2xx가 아닌 경우
+            console.error('🔸 상태 코드:', error.response.status);
+            console.error('🔸 응답 헤더:', error.response.headers);
+            console.error('🔸 응답 데이터:', error.response.data);
+        } else if (error.request) {
+            // 요청은 전송되었지만 응답이 없는 경우
+            console.error('🚫 응답 없음');
+            console.error('🔸 요청 객체:', error.request);
+        } else {
+            // 요청 설정 중 오류가 발생한 경우
+            console.error('⚙️ 요청 설정 오류:', error.message);
+        }
+
+        console.error('🔍 전체 오류 객체:', JSON.stringify(error, null, 2));
+
+        return {
+            statusCode: error.response ? error.response.status : 500,
+            body: JSON.stringify({
+                error: 'Spotify 토큰을 가져오는 데 실패했습니다.',
+                details: error.message,
+            }),
+        };
     }
 };
