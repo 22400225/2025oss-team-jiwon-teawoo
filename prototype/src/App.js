@@ -189,7 +189,6 @@ function App() {
 
     return (
         <>
-            <GlobalStyles />
             {isSidebarOpen && <div className="sidebar-backdrop" onClick={() => setIsSidebarOpen(false)}></div>}
             <div className="app-layout">
                 <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
@@ -234,4 +233,3 @@ function App() {
 }
 
 export default App;
-
