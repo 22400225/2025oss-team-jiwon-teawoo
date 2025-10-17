@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './App.css';
-// ... (기존 핸들러 함수들: handleSearch 등은 생략)
 
 function App() {
     // React 상태(state)를 사용하여 데이터 관리 (기존 코드와 동일)
@@ -19,7 +18,7 @@ function App() {
 
         let accessToken;
         try {
-            const response = await fetch('/.netlify/functions/spotify-auth');
+            const response = await fetch('/.api/spotify', { method: 'GET' });
             const data = await response.json();
 
             if (!response.ok || data.error) {
@@ -76,7 +75,6 @@ function App() {
                 <header className="search-filter-area">
                     {/* 검색 폼 - role="search"는 <form>에 포함되므로 생략 가능 */}
                     <form className="search-bar" role="search" onSubmit={handleSearch}>
-                        <h2 className="sr-only">검색</h2> {/* 스크린 리더를 위한 숨겨진 제목 */}
                         <input 
                             type="search" 
                             id="music-search" 
