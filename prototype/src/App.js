@@ -232,9 +232,6 @@ function App() {
                             </button>
                             <h1 onClick={() => setActiveView({ type: 'search' })} role="link" tabIndex="0">Handong Music</h1>
                         </div>
-                        {/* 💡 새로운 플레이리스트 생성 버튼은 사이드바 내부로 이동했지만, 
-                           모바일 등 헤더에 남기려면 이 위치에 둘 수 있습니다. 여기서는 원본 코드를 따릅니다. */}
-                        <button className="add-playlist-btn" onClick={() => setIsCreateModalOpen(true)} aria-label="새 플레이리스트 생성">+</button>
                     </header>
                     <nav id="search-container" aria-label="음악 검색">
                         <form id="search-form" role="search" onSubmit={handleSearch}>
