@@ -288,3 +288,212 @@
 .play-button:hover {
     color: var(--color-foreground);
 }
+
+/* ======================================================== */
+/* ↓↓↓ 플레이리스트 기능 추가 CSS ↓↓↓               */
+/* ======================================================== */
+
+
+/* ================== 1. 사이드바 (플레이리스트) ================== */
+
+/* 로고 클릭 가능하도록 커서 변경 */
+.sidebar .logo {
+    cursor: pointer;
+}
+
+/* 개별 플레이리스트 아이템 (버튼 + 관리 버튼 래퍼) */
+.playlist-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 버튼과 컨트롤을 양끝으로 */
+    border-radius: 6px;
+    transition: background-color 0.15s;
+    /* .add-folder-btn과 패딩 일치 */
+    padding: 4px 0px 4px 10px; 
+}
+
+/* 현재 선택된 플레이리스트 */
+.playlist-item.active {
+    background-color: var(--color-hover);
+}
+
+/* 호버 시 전체 배경색 변경 */
+.playlist-item:hover {
+    background-color: var(--color-hover);
+}
+
+/* 플레이리스트 클릭 버튼 (커버 + 이름) */
+.playlist-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    color: var(--color-foreground); /* 기본 텍스트 색상 */
+    cursor: pointer;
+    font-size: 14px;
+    text-align: left;
+    padding: 6px 0px; /* 위아래 패딩 */
+    flex-grow: 1; /* 버튼 영역이 꽉 차도록 */
+    overflow: hidden; /* 이름 길 때 ... 처리 */
+}
+
+.playlist-cover {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.playlist-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 플레이리스트 관리 버튼 (수정, 이미지, 삭제) */
+.playlist-controls {
+    display: flex;
+    gap: 4px;
+    visibility: hidden; /* 평소엔 숨김 */
+    padding-right: 10px; /* 오른쪽 여백 */
+    flex-shrink: 0;
+}
+
+/* 아이템에 호버했을 때만 컨트롤 버튼 보이기 */
+.playlist-item:hover .playlist-controls {
+    visibility: visible;
+}
+
+.playlist-controls button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 4px;
+    color: var(--color-secondary);
+    border-radius: 4px;
+}
+.playlist-controls button:hover {
+    color: var(--color-foreground);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+/* ================== 2. 메인 콘텐츠 (플레이리스트 헤더) ================== */
+.playlist-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: var(--color-hover); /* 기존 검색창과 유사한 배경 */
+    border-radius: 8px;
+}
+.playlist-header-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    border-radius: 4px;
+}
+.playlist-header h2 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: var(--color-foreground);
+}
+.playlist-header p {
+    margin: 5px 0 0;
+    color: var(--color-secondary);
+}
+
+
+/* ================== 3. 음악 목록 헤더 (액션 컬럼) ================== */
+.music-list-header .action-col {
+    width: 50px; /* 액션 버튼용 공간 */
+    flex-shrink: 0;
+    text-align: center;
+    padding-right: 8px; /* 오른쪽 끝 패딩 맞춤 */
+}
+
+
+/* ================== 4. 음악 목록 아이템 (액션 버튼) ================== */
+.song-item .action-button {
+    flex-basis: 40px; /* 고정 너비 */
+    flex-shrink: 0;
+    background-color: var(--color-hover);
+    border: none;
+    color: var(--color-foreground);
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    line-height: 28px; /* 수직 중앙 정렬 (border-box 감안) */
+    text-align: center;
+    margin-left: 10px;
+    margin-right: 8px; /* 오른쪽 끝 패딩 맞춤 */
+    transition: background-color 0.15s;
+}
+
+/* 플레이리스트에서 '제거' 버튼 */
+.song-item .action-button.remove-track {
+    background-color: #a02c2c; /* 삭제는 강조되는 붉은색 */
+    color: white;
+}
+.song-item .action-button.remove-track:hover {
+    background-color: #c23a3a;
+}
+
+/* 검색 결과에서 '추가' 버튼 호버 */
+.song-item .action-button:hover {
+    background-color: #555;
+}
+
+/* ================== 5. 컨텍스트 메뉴 (노래 추가) ================== */
+.context-menu {
+    position: fixed; /* 화면 기준 고정 */
+    background-color: #282828; /* 테마보다 조금 더 짙은 팝업 배경 */
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    padding: 8px 0;
+    z-index: 1000;
+    min-width: 200px;
+    border: 1px solid var(--color-border);
+}
+
+.context-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.context-menu-title {
+    font-size: 0.8rem;
+    color: var(--color-secondary);
+    padding: 8px 12px;
+    font-weight: bold;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 5px;
+}
+
+.context-menu-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--color-foreground);
+}
+
+.context-menu-item:hover {
+    background-color: var(--color-hover);
+}
+
+.context-menu-item.disabled {
+    color: #666;
+    cursor: default;
+}
+.context-menu-item.disabled:hover {
+    background: none;
+}
