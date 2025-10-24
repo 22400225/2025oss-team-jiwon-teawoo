@@ -139,20 +139,7 @@ function App() {
         setMessage(`"${query}" 검색 중...`);
         setTracks([]);
         try {
-            // Mock Data 사용
-            const mockTracks = [
-                { id: Date.now() + 1, name: "Dynamite", artists: [{ name: "BTS" }], album: { name: "BE", images: [{ url: 'https://via.placeholder.com/100/58a6ff/0d1117?text=D' }, { url: 'https://via.placeholder.com/64/58a6ff/0d1117?text=D' }] }, external_urls: { spotify: '#' } },
-                { id: Date.now() + 2, name: "Good Day", artists: [{ name: "IU" }], album: { name: "Real", images: [{ url: 'https://via.placeholder.com/100/fcd34d/0d1117?text=G' }, { url: 'https://via.placeholder.com/64/fcd34d/0d1117?text=G' }] }, external_urls: { spotify: '#' } },
-            ];
-            
-            setMessage('');
-            setTracks(mockTracks);
-
-            // 실제 API 로직 (주석 처리)
-            /*
             const response = await fetch('/.netlify/functions/spotify-auth');
-            // ... API 호출 및 데이터 처리
-            */
 
         } catch (error) {
             console.error('노래 검색 오류:', error);
