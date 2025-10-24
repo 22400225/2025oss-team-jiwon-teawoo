@@ -5,7 +5,7 @@ import './App.css';
 function CreatePlaylistModal({ onClose, onCreate }) {
     const [name, setName] = useState('');
     const [cover, setCover] = useState('');
-    
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (name.trim()) {
@@ -19,13 +19,13 @@ function CreatePlaylistModal({ onClose, onCreate }) {
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <h2>새 플레이리스트 생성</h2>
                 <form className="modal-form" onSubmit={handleSubmit}>
-                    
+
                     <label htmlFor="playlist-name">이름</label>
                     <input id="playlist-name" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="플레이리스트 이름" required />
-                    
+
                     <label htmlFor="playlist-cover">커버 이미지 URL (선택 사항)</label>
                     <input id="playlist-cover" type="text" value={cover} onChange={(e) => setCover(e.target.value)} placeholder="https://example.com/image.jpg" />
-                    
+
                     <div className="modal-actions">
                         <button type="button" className="modal-button cancel" onClick={onClose}>취소</button>
                         <button type="submit" className="modal-button confirm">생성</button>
@@ -55,7 +55,7 @@ function EditPlaylistModal({ onClose, onUpdate, playlist }) {
                 <form className="modal-form" onSubmit={handleSubmit}>
                     <label htmlFor="edit-playlist-name">새 이름</label>
                     <input id="edit-playlist-name" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="플레이리스트 이름" required />
-                    
+
                     <div className="modal-actions">
                         <button type="button" className="modal-button cancel" onClick={onClose}>취소</button>
                         <button type="submit" className="modal-button confirm">수정</button>
@@ -98,7 +98,7 @@ function App() {
     const [query, setQuery] = useState('');
     const [tracks, setTracks] = useState([]);
     const [message, setMessage] = useState('듣고 싶은 노래를 검색해 보세요! 🎧');
-    
+
     // ⭐ 1. localStorage에서 데이터를 불러와 state 초기화
     const [playlists, setPlaylists] = useState(() => {
         try {
@@ -140,7 +140,20 @@ function App() {
         setTracks([]);
         try {
             const response = await fetch('/.netlify/functions/spotify-auth');
-
+            const data = await response.json();
+            if (!response.ok || data.error) throw new Error(data.error || 'API 인증에 실패했습니다.');
+            const accessToken = data.accessToken;
+            // 💡 URL 수정: 사용자님의 이전 코드를 참조하여 URL을 정제했습니다.
+            const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=50`;
+            const searchResponse = await fetch(searchUrl, { headers: { 'Authorization': `Bearer ${accessToken}` } });
+            if (!searchResponse.ok) throw new Error('API 요청 실패');
+            const searchData = await searchResponse.json();
+            if (searchData.tracks.items.length === 0) {
+                setMessage(`"${query}"에 대한 검색 결과가 없습니다.`);
+            } else {
+                setTracks(searchData.tracks.items);
+                setMessage('');
+            }
         } catch (error) {
             console.error('노래 검색 오류:', error);
             setMessage(`오류가 발생했습니다: ${error.message} 🛑`);
@@ -161,7 +174,7 @@ function App() {
 
     // 💡 플레이리스트 이름 수정 함수 (Update)
     const handleUpdatePlaylistName = (id, newName) => {
-        setPlaylists(playlists.map(p => 
+        setPlaylists(playlists.map(p =>
             p.id === id ? { ...p, name: newName } : p
         ));
         setIsEditModalOpen(false);
@@ -215,7 +228,7 @@ function App() {
         if (songAdded) {
             showNotification(`'${trackToAdd.name}'을(를) '${playlistName}'에 추가했습니다. 👍`);
         }
-        
+
         setIsAddSongModalOpen(false);
         setTrackToAdd(null);
     };
@@ -251,9 +264,9 @@ function App() {
                     <svg viewBox="0 0 384 512"><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z" /></svg>
                 </button>
                 {isPlaylistView ? ( // 💡 플레이리스트 보기일 경우 삭제 버튼 렌더링
-                    <button 
-                        className="action-button remove-song-btn" 
-                        onClick={() => handleRemoveTrackFromPlaylist(playlistId, track.id, track.name)} 
+                    <button
+                        className="action-button remove-song-btn"
+                        onClick={() => handleRemoveTrackFromPlaylist(playlistId, track.id, track.name)}
                         aria-label={`${track.name}을(를) 플레이리스트에서 제거`}
                     >
                         <svg viewBox="0 0 448 512"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" /></svg>
@@ -286,7 +299,7 @@ function App() {
                             </button>
                         </div>
                     </div>
-                    
+
                     {playlist.tracks.length > 0
                         ? <div id="song-list" role="list">{playlist.tracks.map(track => renderSongItem(track, true, playlist.id))}</div>
                         : <p className="message">이 플레이리스트에 노래가 없습니다.</p>
@@ -307,7 +320,7 @@ function App() {
         <>
             {/* 💡 접근성: 사이드바 배경 및 닫기 기능 */}
             {isSidebarOpen && <div className="sidebar-backdrop" onClick={() => setIsSidebarOpen(false)} aria-hidden="true"></div>}
-            
+
             <div className="app-layout">
                 {/* 💡 접근성: 사이드바 영역 */}
                 <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
@@ -318,9 +331,9 @@ function App() {
                             <span>새 플레이리스트 생성</span>
                         </li>
                         {playlists.map(p => (
-                            <li 
-                                key={p.id} 
-                                className={`playlist-item ${activeView.type === 'playlist' && activeView.id === p.id ? 'active' : ''}`} 
+                            <li
+                                key={p.id}
+                                className={`playlist-item ${activeView.type === 'playlist' && activeView.id === p.id ? 'active' : ''}`}
                                 onClick={() => handlePlaylistClick(p.id)}
                                 role="menuitem"
                                 tabIndex="0"
@@ -349,7 +362,7 @@ function App() {
                             <button type="submit" id="search-button">검색</button>
                         </form>
                     </nav>
-                    
+
                     <div id="song-list-container">
                         {renderContent()}
                     </div>
