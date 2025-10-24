@@ -8,8 +8,9 @@
     --text-secondary: #8b949e;
     --brand-blue: #58a6ff;
     --border-color: #30363d;
-    /* 이전 커밋에서 추가된 로고 관련 변수는 사용하지 않으므로 삭제 (사이드바 레이아웃에서는 로고를 헤더 h1이 대체하거나 별도 컴포넌트로 처리함) */
-    /* --logo-area-max-width: 300px; */ 
+    /* CRUD 버튼에 사용할 색상 추가 */
+    --delete-red: #f85149;
+    --edit-yellow: #fcd34d;
 }
 
 /* 💡 HEAD 스타일 유지 */
@@ -221,6 +222,17 @@ body {
 .play-button:hover { background-color: var(--brand-blue); filter: brightness(1.2); }
 .play-button svg { fill: var(--bg-dark); }
 
+/* 💡 [CRUD] 플레이리스트에서 노래 제거 버튼 스타일 (Delete) */
+.remove-song-btn {
+    background-color: var(--delete-red);
+}
+.remove-song-btn:hover {
+    background-color: var(--delete-red);
+    filter: brightness(1.2);
+}
+.remove-song-btn svg {
+    fill: var(--bg-dark);
+}
 
 /* --- 모달 공통 & 개별 스타일 --- */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1200; }
@@ -241,6 +253,53 @@ body {
 .modal-playlist-item { display: flex; align-items: center; padding: 12px; cursor: pointer; border-radius: 4px; transition: background-color 0.2s; gap: 12px; }
 .modal-playlist-item:hover { background-color: var(--border-color); }
 .modal-playlist-item .playlist-cover { width: 48px; height: 48px; }
+
+/* 💡 [CRUD] 플레이리스트 상세 페이지 헤더 스타일 (Update & Delete) */
+.playlist-header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 1.5rem 1.5rem; /* #song-list-container와 정렬 맞추기 */
+    border-bottom: 1px solid var(--border-color);
+}
+.playlist-header h2 {
+    margin: 0;
+}
+.playlist-actions {
+    display: flex;
+    white-space: nowrap;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+/* 💡 글자 가로 출력 강제 (Inline-flex와 white-space: nowrap 조합) */
+.playlist-actions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: opacity 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+.playlist-actions button:hover {
+    opacity: 0.8;
+}
+
+/* 💡 [CRUD] 수정/삭제 버튼 색상 */
+.playlist-actions .edit-btn {
+    background-color: var(--edit-yellow);
+    color: var(--bg-dark);
+}
+.playlist-actions .delete-btn {
+    background-color: var(--delete-red);
+    color: var(--text-primary);
+}
+
 
 /* --- 알림 메시지 --- */
 .notification { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: var(--brand-blue); color: var(--bg-dark); font-weight: 500; padding: 12px 24px; border-radius: 8px; z-index: 2000; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; }
@@ -317,4 +376,15 @@ body {
     .song-info p { font-size: 0.9rem; }
     .action-button { width: 45px; height: 45px; }
     .action-button svg { width: 18px; height: 18px; }
+
+    /* 💡 [CRUD] 플레이리스트 헤더 데스크탑 스타일 조정 */
+    .playlist-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 2.5rem 1.5rem; /* 데스크탑 패딩 맞추기 */
+    }
+    .playlist-actions {
+        margin-bottom: 0;
+    }
 }
