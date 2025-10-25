@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-// 플레이리스트 생성 모달 컴포넌트
+//플레이리스트 생성 모달 컴포넌트
 function CreatePlaylistModal({ onClose, onCreate }) {
     const [name, setName] = useState('');
     const [cover, setCover] = useState('');
@@ -36,7 +36,7 @@ function CreatePlaylistModal({ onClose, onCreate }) {
     );
 }
 
-// 💡 새로운 모달: 플레이리스트 수정 모달 컴포넌트 (Update)
+//플레이리스트 수정 모달 컴포넌트(Update)
 function EditPlaylistModal({ onClose, onUpdate, playlist }) {
     const [name, setName] = useState(playlist.name);
 
@@ -66,7 +66,7 @@ function EditPlaylistModal({ onClose, onUpdate, playlist }) {
     );
 }
 
-// 노래를 플레이리스트에 추가하는 모달 컴포넌트
+//노래를 플레이리스트에 추가하는 모달 컴포넌트
 function AddToPlaylistModal({ onClose, onSelectPlaylist, playlists, track }) {
     if (!track) return null;
     return (
@@ -99,7 +99,7 @@ function App() {
     const [tracks, setTracks] = useState([]);
     const [message, setMessage] = useState('듣고 싶은 노래를 검색해 보세요! 🎧');
 
-    // ⭐ 1. localStorage에서 데이터를 불러와 state 초기화
+    //localStorage에서 데이터를 불러와 state 초기화
     const [playlists, setPlaylists] = useState(() => {
         try {
             const savedPlaylists = localStorage.getItem('myPlaylists');
@@ -118,20 +118,21 @@ function App() {
     const [notification, setNotification] = useState('');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    // ⭐ 2. playlists 상태가 변경될 때마다 localStorage에 저장
+    //playlists 상태가 변경될 때마다 localStorage에 저장
     useEffect(() => {
         try {
             localStorage.setItem('myPlaylists', JSON.stringify(playlists));
         } catch (e) {
             console.error("Failed to save playlists to localStorage", e);
         }
-    }, [playlists]); // playlists가 바뀔 때마다 실행
+    }, [playlists]); //playlists가 바뀔 때마다 실행
 
     const showNotification = (text) => {
         setNotification(text);
         setTimeout(() => setNotification(''), 3000);
     };
 
+    //노래 검색 함수(Read)
     const handleSearch = async (event) => {
         event.preventDefault();
         if (!query.trim()) return;
@@ -143,7 +144,6 @@ function App() {
             const data = await response.json();
             if (!response.ok || data.error) throw new Error(data.error || 'API 인증에 실패했습니다.');
             const accessToken = data.accessToken;
-            // 💡 URL 수정: 사용자님의 이전 코드를 참조하여 URL을 정제했습니다.
             const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=50`;
             const searchResponse = await fetch(searchUrl, { headers: { 'Authorization': `Bearer ${accessToken}` } });
             if (!searchResponse.ok) throw new Error('API 요청 실패');
@@ -160,6 +160,7 @@ function App() {
         }
     };
 
+    //플레이리스트 생성 함수(Create)
     const handleCreatePlaylist = (name, cover) => {
         const newPlaylist = {
             id: Date.now(),
@@ -172,7 +173,7 @@ function App() {
         showNotification(`'${name}' 플레이리스트가 생성되었습니다. ✅`);
     };
 
-    // 💡 플레이리스트 이름 수정 함수 (Update)
+    //플레이리스트 이름 수정 함수(Update)
     const handleUpdatePlaylistName = (id, newName) => {
         setPlaylists(playlists.map(p =>
             p.id === id ? { ...p, name: newName } : p
@@ -185,7 +186,7 @@ function App() {
         }
     };
 
-    // 💡 플레이리스트 삭제 함수 (Delete)
+    //플레이리스트 삭제 함수 (Delete)
     const handleDeletePlaylist = (id, name) => {
         if (window.confirm(`정말로 플레이리스트 '${name}'을(를) 삭제하시겠습니까?`)) {
             setPlaylists(playlists.filter(p => p.id !== id));
@@ -233,7 +234,7 @@ function App() {
         setTrackToAdd(null);
     };
 
-    // 💡 플레이리스트에서 노래 삭제 함수 (Delete)
+    //플레이리스트에서 노래 삭제 함수 (Delete)
     const handleRemoveTrackFromPlaylist = (playlistId, trackId, trackName) => {
         setPlaylists(playlists.map(p => {
             if (p.id === playlistId) {
@@ -247,7 +248,7 @@ function App() {
 
     const handlePlaylistClick = (playlistId) => {
         setActiveView({ type: 'playlist', id: playlistId });
-        setIsSidebarOpen(false); // 플레이리스트 선택 시 사이드바 닫기
+        setIsSidebarOpen(false); //플레이리스트 선택 시 사이드바 닫기
     };
 
     const renderSongItem = (track, isPlaylistView = false, playlistId = null) => (
@@ -263,7 +264,7 @@ function App() {
                 <button className="action-button play-button" onClick={() => window.open(track.external_urls.spotify, '_blank')} aria-label={`${track.name} Spotify에서 재생`}>
                     <svg viewBox="0 0 384 512"><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z" /></svg>
                 </button>
-                {isPlaylistView ? ( // 💡 플레이리스트 보기일 경우 삭제 버튼 렌더링
+                {isPlaylistView ? ( //플레이리스트 보기일 경우 삭제 버튼 렌더링
                     <button
                         className="action-button remove-song-btn"
                         onClick={() => handleRemoveTrackFromPlaylist(playlistId, track.id, track.name)}
@@ -272,7 +273,7 @@ function App() {
                         <svg viewBox="0 0 448 512"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" /></svg>
                     </button>
                 ) : (
-                    // 💡 검색 결과 보기일 경우 추가 버튼 렌더링
+                    //검색 결과 보기일 경우 추가 버튼 렌더링
                     <button className="action-button add-song-btn" onClick={() => handleAddSongClick(track)} aria-label={`${track.name}을(를) 플레이리스트에 추가`}>
                         <svg viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" /></svg>
                     </button>
@@ -318,11 +319,9 @@ function App() {
 
     return (
         <>
-            {/* 💡 접근성: 사이드바 배경 및 닫기 기능 */}
             {isSidebarOpen && <div className="sidebar-backdrop" onClick={() => setIsSidebarOpen(false)} aria-hidden="true"></div>}
 
             <div className="app-layout">
-                {/* 💡 접근성: 사이드바 영역 */}
                 <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
                     <h2>플레이리스트</h2>
                     <ul className="playlist-list" role="menu">
@@ -356,7 +355,6 @@ function App() {
                     </header>
                     <nav id="search-container" aria-label="음악 검색">
                         <form id="search-form" role="search" onSubmit={handleSearch}>
-                            {/* 💡 접근성: 검색어 입력 레이블 추가 */}
                             <label htmlFor="search-input" className="sr-only">검색어를 입력하세요</label>
                             <input type="text" id="search-input" placeholder="아티스트, 노래 제목, 앨범명 검색..." value={query} onChange={(e) => setQuery(e.target.value)} />
                             <button type="submit" id="search-button">검색</button>
