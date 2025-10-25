@@ -1,290 +1,320 @@
-/* src/App.css */
+/* App.css */
 
-/* ------------------- 기본 레이아웃 및 컨테이너 ------------------- */
-.app-container {
+/* === 기본 스타일 (Blue Theme & Mobile First) === */
+:root {
+    --bg-dark: #0d1117;
+    --bg-light: #161b22;
+    --text-primary: #c9d1d9;
+    --text-secondary: #8b949e;
+    --brand-blue: #58a6ff;
+    --border-color: #30363d;
+    /* 이전 커밋에서 추가된 로고 관련 변수는 사용하지 않으므로 삭제 (사이드바 레이아웃에서는 로고를 헤더 h1이 대체하거나 별도 컴포넌트로 처리함) */
+    /* --logo-area-max-width: 300px; */ 
+}
+
+/* 💡 HEAD 스타일 유지 */
+body {
+    margin: 0;
+    background-color: var(--bg-dark);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text-primary);
+    overflow: hidden; /* 모바일에서 스크롤 방지 */
+}
+
+* { box-sizing: border-box; }
+#root { width: 100%; height: 100%; }
+
+/* --- 앱 레이아웃 (사이드바 구조) --- */
+.app-layout {
     display: flex;
-    width: 100%;
-    height: 100%;
-}
-
-/* ================== 1. 사이드바 스타일 ================== */
-.sidebar {
-    width: 250px;
-    background-color: var(--color-sidebar);
-    padding: 15px 10px;
-    border-right: 1px solid var(--color-border);
-    flex-shrink: 0;
-    overflow-y: auto;
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    padding: 0 10px;
-}
-
-.playlist-list {
-    list-style: none;
-    padding: 0;
-}
-
-.add-folder-btn {
-    width: 100%;
-    padding: 8px 10px;
-    margin-top: 10px;
-    background: none;
-    border: none;
-    color: var(--color-secondary);
-    text-align: left;
-    cursor: pointer;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    border-radius: 6px;
-    transition: background-color 0.15s;
-}
-
-.add-folder-btn:hover {
-    background-color: var(--color-hover);
-    color: var(--color-foreground);
-}
-
-.add-folder-btn .icon {
-    font-size: 16px;
-    margin-right: 8px;
-    font-weight: 700;
-}
-
-
-/* ================== 2. 메인 콘텐츠 스타일 ================== */
-.main-content {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 0 20px;
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--bg-dark);
+    position: relative; /* Sidebar positioning context */
     overflow: hidden;
 }
 
-/* 검색 및 필터 영역 */
-.search-filter-area {
+/* --- 사이드바 (모바일 반응형) --- */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 240px;
+    height: 100%;
+    background-color: var(--bg-light); 
+    padding: 24px 8px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-color);
+    z-index: 1100;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    flex-shrink: 0;
+}
+
+.sidebar.open { transform: translateX(0); }
+.sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1050;
+}
+
+.sidebar h2 {
+    font-size: 1.2rem;
+    padding: 0 16px;
+    margin-bottom: 16px;
+    color: var(--text-secondary);
+    font-weight: 700;
+}
+
+.playlist-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; }
+.playlist-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    gap: 12px;
+}
+.playlist-item.active, .playlist-item:hover { background-color: #21262d; }
+.playlist-cover { width: 48px; height: 48px; object-fit: cover; border-radius: 4px; }
+.playlist-item span {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+}
+.playlist-item.create-new { color: var(--brand-blue); font-weight: bold; }
+.playlist-item.create-new .add-icon { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 24px;
+    width: 48px; 
+    height: 48px; 
+    background-color: var(--border-color);
+    border-radius: 4px;
+}
+
+/* --- 메인 컨텐츠 --- */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    width: 100%; /* 모바일에서 100% 사용 */
+}
+
+/* 헤더 (메인 컨텐츠의 상단) */
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0 10px 0;
-    border-bottom: 1px solid var(--color-border);
+    padding: 1rem 1.5rem;
+    background-color: var(--bg-dark);
+    border-bottom: 1px solid var(--border-color);
     flex-shrink: 0;
 }
 
-.search-bar {
-    display: flex;
-    align-items: center;
-    background-color: var(--color-hover);
-    border-radius: 8px;
-    padding: 5px 10px;
-    flex-grow: 1;
-    max-width: 400px;
+.header-left { display: flex; align-items: center; gap: 16px; }
+.menu-btn { background: none; border: none; padding: 4px; cursor: pointer; }
+.menu-btn svg { width: 24px; height: 24px; fill: var(--text-primary); }
+
+.header h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    cursor: pointer;
+    color: var(--brand-blue);
+    font-weight: 700;
 }
 
-.search-bar input[type="search"] {
-    border: none;
-    background: none;
-    color: var(--color-foreground);
-    padding: 0;
-    width: 100%;
-    font-size: 14px;
+/* --- 검색 폼 (기존 스타일 통합) --- */
+#search-container { padding: 1rem 1.5rem; }
+#search-form { 
+    display: flex; 
+    flex-direction: column; /* Mobile first: 세로 정렬 */
+    gap: 0.5rem; 
 }
 
-.search-bar input[type="search"]::placeholder {
-    color: var(--color-secondary);
+#search-input {
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    border: 1px solid var(--border-color);
+    border-radius: 20px; /* 다시 둥근 형태로 통일 */
+    background-color: var(--bg-light); /* light 배경 사용 */
+    color: var(--text-primary);
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-.search-bar input[type="search"]:focus {
+#search-input:focus {
     outline: none;
+    border-color: var(--brand-blue);
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
 }
 
-.search-icon-btn {
-    background: none;
+#search-button {
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #0d1117;
+    background-color: var(--brand-blue);
     border: none;
-    color: var(--color-secondary);
+    border-radius: 20px;
     cursor: pointer;
-    margin-left: 5px;
-    /* 버튼 내부 아이콘 크기 조정 */
-    padding: 0; 
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
-.controls-area {
-    margin-left: 20px;
+/* --- 노래 목록 --- */
+#song-list-container {
+    padding: 0 1.5rem 1.5rem;
+    overflow-y: auto;
+    flex: 1; /* 메인 컨텐츠 영역에서 남은 공간 모두 차지 */
 }
 
-.settings-btn {
-    background: none;
-    border: 1px solid var(--color-border);
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    color: var(--color-secondary);
-    cursor: pointer;
-    transition: background-color 0.15s;
-}
+.message { text-align: center; color: var(--text-secondary); font-size: 1rem; margin-top: 2rem; }
+#song-list { display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
 
-.settings-btn:hover {
-    background-color: var(--color-hover);
-}
-
-
-/* ================== 음악 목록 헤더 스타일 (.music-list-header) ================== */
-.music-list-header {
-    display: flex;
-    /* Flex 항목으로 사용되지 않으므로 flex-basis 대신 width 비율 사용 */
-    padding: 10px 0;
-    font-weight: 600;
-    color: var(--color-secondary);
-    border-bottom: 1px solid var(--color-border);
-    flex-shrink: 0;
-    margin-bottom: 5px;
-}
-
-.music-list-header .header-col {
-    padding: 0 8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    cursor: default; /* 정렬 기능이 없다면 default */
-}
-
-/* 헤더 컬럼 너비 설정: 목록 항목 (.song-item)과 일치시켜야 함 */
-.music-list-header .img-col {
-    width: 55px; /* (커버 40px + 마진 15px)와 유사하게 설정 */
-    flex-shrink: 0;
-    text-align: left;
-}
-.music-list-header .title-col {
-    flex-grow: 1; /* 제목/아티스트 영역이 가장 넓음 */
-}
-.music-list-header .artist-col {
-    /* 현재 구조에서는 .song-info에 제목/아티스트가 함께 있으므로, 이 컬럼은 필요 없거나 숨겨야 함 */
-    display: none;
-}
-.music-list-header .album-col {
-    /* 현재 구조에서는 .song-info에 제목/아티스트가 함께 있으므로, 이 컬럼은 필요 없거나 숨겨야 함 */
-    display: none; 
-}
-.music-list-header .duration-col {
-    width: 80px; /* 재생 시간 컬럼 + 재생 버튼 공간 */
-    text-align: right;
-    flex-shrink: 0;
-    padding-right: 15px; /* 재생 버튼 영역에 맞춤 */
-}
-
-
-/* ================== 음악 목록 본문 (아이템) 스타일 ================== */
-.music-list-body {
-    overflow-y: auto; 
-    padding-right: 5px; 
-}
-
-/* 결과 메시지 스타일 */
-.music-list-body .message {
-    padding: 20px;
-    text-align: center;
-    color: var(--color-secondary);
-}
-
-#song-list {
-    /* 목록 컨테이너 역할. <ul> 태그 대신 사용 */
-    padding: 0;
-    margin: 0;
-}
-
+/* 개별 노래 아이템 */
 .song-item {
-    /* 새로운 Flex 기반 아이템 레이아웃 */
     display: flex;
     align-items: center;
-    padding: 8px 0; 
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.1s, color 0.1s;
-}
-
-.song-item:hover {
-    background-color: var(--color-hover);
-}
-
-/* E. 앨범 커버 스타일 */
-.album-cover {
-    width: 40px; 
-    height: 40px;
-    object-fit: cover;
-    margin: 0 15px 0 8px; /* 헤더의 IMG 컬럼 시작점과 맞추기 위해 왼쪽 패딩 8px와 유사하게 조정 */
-    border-radius: 4px; 
-    flex-shrink: 0;
-}
-
-/* D. 노래 정보 (제목/아티스트/앨범) 스타일 조정 */
-.song-info {
-    flex-grow: 1; 
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; 
-    min-width: 0; /* Flexbox에서 텍스트 넘침 방지 */
-}
-
-.song-info h3 {
-    font-size: 15px;
-    font-weight: 600;
-    white-space: nowrap;
+    background-color: var(--bg-light);
+    border: 1px solid var(--border-color);
+    padding: 0.6rem;
+    border-radius: 8px;
     overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0;
-    line-height: 1.4;
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+.song-item:hover { transform: translateY(-4px); background-color: #21262d; }
+.album-cover { width: 45px; height: 45px; border-radius: 4px; margin-right: 0.8rem; object-fit: cover; flex-shrink: 0; }
+.song-info { flex-grow: 1; min-width: 0; }
+.song-info h3, .song-info p { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.song-info h3 { font-size: 0.9rem; margin-bottom: 0.1rem; }
+.song-info p { font-size: 0.75rem; color: var(--text-secondary); }
+
+/* 노래 액션 버튼 */
+.song-actions { display: flex; align-items: center; gap: 8px; margin-left: 0.8rem; flex-shrink: 0; }
+.action-button { 
+    background-color: transparent; 
+    border: none; 
+    border-radius: 50%; 
+    width: 36px; 
+    height: 36px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer; 
+    padding: 0; 
+    transition: background-color 0.2s; 
+}
+.action-button:hover { background-color: rgba(255, 255, 255, 0.1); }
+.action-button svg { width: 14px; height: 14px; fill: var(--text-primary); }
+.play-button { background-color: var(--brand-blue); }
+.play-button:hover { background-color: var(--brand-blue); filter: brightness(1.2); }
+.play-button svg { fill: var(--bg-dark); }
+
+
+/* --- 모달 공통 & 개별 스타일 --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1200; }
+.modal-content { background-color: var(--bg-light); padding: 24px; border-radius: 8px; width: 90%; max-width: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); border: 1px solid var(--border-color); }
+.modal-content h2 { margin-top: 0; }
+.modal-form label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+.modal-form input { width: 100%; padding: 10px; margin-bottom: 16px; border-radius: 4px; border: 1px solid var(--border-color); background-color: var(--bg-dark); color: var(--text-primary); }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.modal-button { padding: 10px 20px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; }
+.modal-button.confirm { background-color: var(--brand-blue); color: var(--bg-dark); }
+.modal-button.cancel { background-color: var(--text-secondary); color: var(--bg-dark); }
+.add-song-info { display: flex; align-items: center; gap: 16px; padding: 16px; background-color: var(--bg-dark); border-radius: 8px; margin: 16px 0; }
+.add-song-info img { width: 64px; height: 64px; border-radius: 4px; }
+.add-song-info div { display: flex; flex-direction: column; }
+.add-song-info strong { font-size: 1rem; color: var(--text-primary); }
+.add-song-info span { font-size: 0.8rem; color: var(--text-secondary); }
+.modal-playlist-list { list-style: none; padding: 0; margin: 0; max-height: 40vh; overflow-y: auto; }
+.modal-playlist-item { display: flex; align-items: center; padding: 12px; cursor: pointer; border-radius: 4px; transition: background-color 0.2s; gap: 12px; }
+.modal-playlist-item:hover { background-color: var(--border-color); }
+.modal-playlist-item .playlist-cover { width: 48px; height: 48px; }
+
+/* --- 알림 메시지 --- */
+.notification { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: var(--brand-blue); color: var(--bg-dark); font-weight: 500; padding: 12px 24px; border-radius: 8px; z-index: 2000; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; }
+.notification.show { opacity: 1; transform: translate(-50%, -10px); }
+
+/* 자동 완성 스타일 재정의 */
+/* input autofill background color를 bg-light로 통일 (sidebar 레이아웃의 input background-color와 일치) */
+#search-input:-webkit-autofill, #search-input:-webkit-autofill:hover, #search-input:-webkit-autofill:focus, #search-input:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--text-primary) !important;
+    -webkit-box-shadow: 0 0 0 30px var(--bg-light) inset !important;
+    box-shadow: 0 0 0 30px var(--bg-light) inset !important;
+    caret-color: var(--text-primary);
 }
 
-.song-info p {
-    font-size: 12px;
-    color: var(--color-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0;
-}
+/* === 태블릿 & 데스크탑 반응형 스타일 (768px 이상) === */
+@media (min-width: 768px) {
+    /* 💡 사이드바 레이아웃 활성화 */
+    .app-layout { position: static; }
 
-.song-info em {
-    font-style: normal; 
-}
-
-/* F. 재생 시간 스타일 */
-.track-duration {
-    width: 40px; /* 시간 텍스트가 차지할 공간 */
-    text-align: right;
-    flex-shrink: 0;
-    color: var(--color-secondary);
-    font-size: 13px;
-    margin-right: 10px; /* 재생 버튼과의 간격 */
-}
-
-/* G. 재생 버튼 스타일 */
-.play-button {
-    width: 20px;
-    height: 20px;
-    background: none;
-    border: none;
-    color: var(--color-secondary);
-    cursor: pointer;
-    margin-right: 8px; /* 메인 영역 오른쪽 끝에 맞춤 */
-    padding: 0;
-    flex-shrink: 0;
-    transition: color 0.15s;
-}
-
-.play-button svg {
-    fill: currentColor;
-    width: 100%;
-    height: 100%;
-}
-
-.play-button:hover {
-    color: var(--color-foreground);
+    .sidebar {
+        position: static;
+        transform: translateX(0);
+        width: 240px; 
+        background-color: var(--bg-dark); /* 메인 배경색으로 변경 */
+        border-right: 1px solid var(--border-color); /* 테두리 유지 */
+        padding-top: 1rem; /* 헤더가 사라지므로 상단 여백 조정 */
+    }
+    
+    /* 메뉴 버튼 숨기기 */
+    .menu-btn, .sidebar-backdrop { display: none; }
+    
+    /* 💡 메인 컨텐츠 조정 */
+    .header { 
+        padding: 1.5rem 2.5rem; 
+        /* 데스크탑에서 헤더의 로고/이름과 검색바가 분리되었으므로, 헤더에는 검색 기능 관련 요소 제거 */
+    }
+    .header h1 { font-size: 2.2rem; }
+    .add-playlist-btn { width: 40px; height: 40px; font-size: 24px; }
+    
+    /* 검색 폼 레이아웃 */
+    #search-container { padding: 1.5rem 2.5rem; }
+    #search-form { 
+        flex-direction: row; 
+        max-width: none; /* 메인 컨텐츠 너비 전체 사용 */
+        margin: 0; 
+        align-items: center; 
+        gap: 0.8rem; /* 모바일에서 통합된 gap 사용 */
+    }
+    
+    /* 검색 입력 필드 */
+    #search-input { 
+        flex-grow: 1; 
+        margin: 0; 
+        padding: 14px 20px; 
+        font-size: 1.1rem; 
+    }
+    
+    /* 검색 버튼 */
+    #search-button { 
+        width: auto; 
+        padding: 14px 35px; 
+        flex-shrink: 0; 
+        font-size: 1.1rem; 
+    }
+    
+    /* 노래 목록 컨테이너 */
+    #song-list-container { padding: 0 2.5rem 2.5rem; }
+    #song-list { gap: 1rem; }
+    
+    /* 노래 아이템 */
+    .song-item { padding: 1rem; }
+    .album-cover { width: 70px; height: 70px; }
+    .song-info h3 { font-size: 1.1rem; }
+    .song-info p { font-size: 0.9rem; }
+    .action-button { width: 45px; height: 45px; }
+    .action-button svg { width: 18px; height: 18px; }
 }
