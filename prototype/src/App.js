@@ -3,6 +3,7 @@ import './App.css';
 
 //플레이리스트 생성 모달 컴포넌트
 function CreatePlaylistModal({ onClose, onCreate }) {
+    // ... (모달 코드는 동일)
     const [name, setName] = useState('');
     const [cover, setCover] = useState('');
 
@@ -38,6 +39,7 @@ function CreatePlaylistModal({ onClose, onCreate }) {
 
 //플레이리스트 수정 모달 컴포넌트(Update)
 function EditPlaylistModal({ onClose, onUpdate, playlist }) {
+    // ... (모달 코드는 동일)
     const [name, setName] = useState(playlist.name);
 
     const handleSubmit = (e) => {
@@ -68,6 +70,7 @@ function EditPlaylistModal({ onClose, onUpdate, playlist }) {
 
 //노래를 플레이리스트에 추가하는 모달 컴포넌트
 function AddToPlaylistModal({ onClose, onSelectPlaylist, playlists, track }) {
+    // ... (모달 코드는 동일)
     if (!track) return null;
     return (
         <div className="modal-overlay" role="dialog" aria-modal="true" onClick={onClose}>
@@ -94,12 +97,10 @@ function AddToPlaylistModal({ onClose, onSelectPlaylist, playlists, track }) {
 }
 
 function App() {
-    // 상태 관리
+    // ... (기존 상태 관리 코드는 동일)
     const [query, setQuery] = useState('');
     const [tracks, setTracks] = useState([]);
     const [message, setMessage] = useState('듣고 싶은 노래를 검색해 보세요! 🎧');
-
-    //localStorage에서 데이터를 불러와 state 초기화
     const [playlists, setPlaylists] = useState(() => {
         try {
             const savedPlaylists = localStorage.getItem('myPlaylists');
@@ -109,7 +110,6 @@ function App() {
             return [];
         }
     });
-
     const [activeView, setActiveView] = useState({ type: 'search' });
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -118,22 +118,32 @@ function App() {
     const [notification, setNotification] = useState('');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    //playlists 상태가 변경될 때마다 localStorage에 저장
+    // ... (useEffect 코드는 동일)
     useEffect(() => {
         try {
             localStorage.setItem('myPlaylists', JSON.stringify(playlists));
         } catch (e) {
             console.error("Failed to save playlists to localStorage", e);
         }
-    }, [playlists]); //playlists가 바뀔 때마다 실행
+    }, [playlists]);
 
     const showNotification = (text) => {
         setNotification(text);
         setTimeout(() => setNotification(''), 3000);
     };
 
+    // [추가] 1. 밀리초(ms)를 "분:초" (mm:ss) 형식으로 변환하는 함수
+    const formatDuration = (ms) => {
+        const totalSeconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        // 3:5 -> 3:05 처럼 0을 채워줍니다.
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    };
+
     //노래 검색 함수(Read)
     const handleSearch = async (event) => {
+        // ... (함수 내용은 동일)
         event.preventDefault();
         if (!query.trim()) return;
         setActiveView({ type: 'search' });
@@ -160,6 +170,7 @@ function App() {
         }
     };
 
+    // ... (handleCreatePlaylist, handleUpdatePlaylistName, handleDeletePlaylist, handleAddSongClick, handleAddSongToPlaylist, handleRemoveTrackFromPlaylist, handlePlaylistClick 함수들은 모두 동일) ...
     //플레이리스트 생성 함수(Create)
     const handleCreatePlaylist = (name, cover) => {
         const newPlaylist = {
@@ -251,6 +262,8 @@ function App() {
         setIsSidebarOpen(false); //플레이리스트 선택 시 사이드바 닫기
     };
 
+
+    // [수정] 2. renderSongItem 함수 내부에 재생 시간 <span> 추가
     const renderSongItem = (track, isPlaylistView = false, playlistId = null) => (
         <article className="song-item" key={track.id}>
             <img src={track.album.images[1]?.url || track.album.images[0]?.url || 'https://via.placeholder.com/100'} alt={`${track.album.name} 앨범 커버`} className="album-cover" />
@@ -260,6 +273,13 @@ function App() {
                     {track.artists.map(artist => artist.name).join(', ')} - <em>{track.album.name}</em>
                 </p>
             </div>
+            
+            {/* --- [추가] 노래 재생 시간 --- */}
+            <span className="track-duration">
+                {formatDuration(track.duration_ms)}
+            </span>
+            {/* --- [추가] 끝 --- */}
+
             <div className="song-actions">
                 <button className="action-button play-button" onClick={() => window.open(track.external_urls.spotify, '_blank')} aria-label={`${track.name} Spotify에서 재생`}>
                     <svg viewBox="0 0 384 512"><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z" /></svg>
@@ -283,6 +303,7 @@ function App() {
     );
 
     const renderContent = () => {
+        // ... (함수 내용은 동일)
         if (activeView.type === 'playlist') {
             const playlist = playlists.find(p => p.id === activeView.id);
             if (!playlist) return <p className="message">플레이리스트를 찾을 수 없습니다.</p>;
@@ -318,6 +339,7 @@ function App() {
     };
 
     return (
+        // ... (전체 JSX return 문은 동일)
         <>
             {isSidebarOpen && <div className="sidebar-backdrop" onClick={() => setIsSidebarOpen(false)} aria-hidden="true"></div>}
 
